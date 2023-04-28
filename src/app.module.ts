@@ -16,6 +16,7 @@ import { CompanyType } from "./companies/company_types/company_types.model";
 import { Company } from "./companies/companies.model";
 import { EmployeesModule } from './companies/employees/employees.module';
 import { Employee } from "./companies/employees/employees.model";
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -41,7 +42,8 @@ import { Employee } from "./companies/employees/employees.model";
         UsersModule,
         CompaniesModule,
         CompanyTypesModule,
-        EmployeesModule
+        EmployeesModule,
+        AuthModule
     ]
 })
 export class AppModule{

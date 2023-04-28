@@ -17,6 +17,9 @@ import { CompaniesModule } from 'src/companies/companies.module';
     RolesModule,
     UsersModule,
     CompaniesModule
+  ],
+  exports: [
+    AccountsService
   ]
 })
 export class AccountsModule {}

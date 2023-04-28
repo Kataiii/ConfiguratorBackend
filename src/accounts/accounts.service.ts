@@ -21,6 +21,7 @@ export class AccountsService {
         const account = await this.accountRepository.create(dto);
         const role = await this.rolesService.getRoleByName('user');
         await account.$set('roles', [role.id]);
+        account.roles = [role];
         return account;
     }
 
@@ -34,7 +35,13 @@ export class AccountsService {
         return accounts;
     }
 
+    async getAccountByEmail(email: string){
+        const account = await this.accountRepository.findOne({where: {email}, include: {all: true}});
+        return account;
+    }
+
     async createAccountWithUser(dto: CreateAccountUserDto){
+        //TODO добавить проверку на существование аккаунта
         const dtoForAccount = new CreateAccountDto(dto.email, dto.password);
         const account = await this.createAccount(dtoForAccount);
         const dtoForUser = new CreateUserDto(account.id, dto.login);
