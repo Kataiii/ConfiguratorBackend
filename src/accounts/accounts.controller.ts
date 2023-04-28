@@ -1,10 +1,9 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common/enums';
-import { HttpException } from '@nestjs/common/exceptions';
 import { ApiOperation } from '@nestjs/swagger';
 import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';
+import { CreateAccountCompanyDto } from './dto/create-account-company.dto';
 import { CreateAccountUserDto } from './dto/create-account-user.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 
@@ -40,5 +39,12 @@ export class AccountsController {
     @Post('/create_with_user')
     createAccountWithUser(@Body() accountWithUserDto: CreateAccountUserDto){
         return this.accountService.createAccountWithUser(accountWithUserDto);
+    }
+
+    @ApiOperation({summary: 'Create account with company'})
+    @ApiResponse({status: 200, type: Account})
+    @Post('/create_with_company')
+    createAccountWithCompany(@Body() accountWithCompanyDto: CreateAccountCompanyDto){
+        return this.accountService.createAccountWithCompany(accountWithCompanyDto);
     }
 }

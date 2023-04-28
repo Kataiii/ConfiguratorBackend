@@ -7,6 +7,7 @@ import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
 import { RolesModule } from 'src/roles/roles.module';
 import { UsersModule } from 'src/users/users.module';
+import { CompaniesModule } from 'src/companies/companies.module';
 
 @Module({
   controllers: [AccountsController],
@@ -14,7 +15,8 @@ import { UsersModule } from 'src/users/users.module';
   imports: [
     SequelizeModule.forFeature([Account, Role, AccountRoles]),
     RolesModule,
-    UsersModule
+    UsersModule,
+    CompaniesModule
   ]
 })
 export class AccountsModule {}

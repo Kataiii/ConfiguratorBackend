@@ -10,6 +10,10 @@ import { Role } from "./roles/roles.model";
 import { RolesModule } from './roles/roles.module';
 import { User } from "./users/users.model";
 import { UsersModule } from './users/users.module';
+import { CompaniesModule } from './companies/companies.module';
+import { CompanyTypesModule } from './companies/company_types/company_types.module';
+import { CompanyType } from "./companies/company_types/company_types.model";
+import { Company } from "./companies/companies.model";
 
 
 @Module({
@@ -26,13 +30,15 @@ import { UsersModule } from './users/users.module';
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [Account, Role, City, AccountRoles, User],
+            models: [Account, Role, City, AccountRoles, User, CompanyType, Company],
             autoLoadModels: true
           }),
         AccountsModule,
         CitiesModule,
         RolesModule,
         UsersModule,
+        CompaniesModule,
+        CompanyTypesModule,
     ]
 })
 export class AppModule{

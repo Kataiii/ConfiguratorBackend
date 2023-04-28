@@ -19,6 +19,10 @@ export class Account extends Model<Account, AccountCreationAttrs>{
     @Column({type: DataType.STRING, unique:true, allowNull: false})
     email: string;
 
+    @ApiProperty({example: false, description: 'Проверка почты', required: false})
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
+    is_checked_email: string; 
+
     @ApiProperty({example: 'Qwerty123*', description: 'Пароль', required: true})
     @Column({type: DataType.STRING, allowNull: false})
     password: string; //массив байтов
