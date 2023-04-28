@@ -32,10 +32,6 @@ export class Account extends Model<Account, AccountCreationAttrs>{
     @Column({type: DataType.BOOLEAN, defaultValue: false})
     is_spam: boolean;
 
-    // @ApiProperty({example: 1, description: 'Идентификатор роли', required: false})
-    // @ForeignKey(() => Role)
-    // @Column({type: DataType.INTEGER, defaultValue: 2})
-    // role_id: number;
     @BelongsToMany(() => Account, () => AccountRoles)
     roles: Role[];
 

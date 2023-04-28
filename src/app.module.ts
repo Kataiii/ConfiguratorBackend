@@ -8,6 +8,8 @@ import { City } from "./cities/cities.model";
 import { CitiesModule } from './cities/cities.module';
 import { Role } from "./roles/roles.model";
 import { RolesModule } from './roles/roles.module';
+import { User } from "./users/users.model";
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -24,12 +26,13 @@ import { RolesModule } from './roles/roles.module';
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [Account, Role, City, AccountRoles],
+            models: [Account, Role, City, AccountRoles, User],
             autoLoadModels: true
           }),
         AccountsModule,
         CitiesModule,
         RolesModule,
+        UsersModule,
     ]
 })
 export class AppModule{

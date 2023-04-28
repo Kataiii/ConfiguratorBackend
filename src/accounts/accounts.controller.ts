@@ -5,6 +5,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';
+import { CreateAccountUserDto } from './dto/create-account-user.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 
 @ApiTags('Accounts')
@@ -34,5 +35,10 @@ export class AccountsController {
         return this.accountService.createAccount(accountDto);
     }
 
-
+    @ApiOperation({summary: 'Create account with user'})
+    @ApiResponse({status: 200, type: Account})
+    @Post('/create_with_user')
+    createAccountWithUser(@Body() accountWithUserDto: CreateAccountUserDto){
+        return this.accountService.createAccountWithUser(accountWithUserDto);
+    }
 }
