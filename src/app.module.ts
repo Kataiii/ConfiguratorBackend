@@ -14,6 +14,8 @@ import { CompaniesModule } from './companies/companies.module';
 import { CompanyTypesModule } from './companies/company_types/company_types.module';
 import { CompanyType } from "./companies/company_types/company_types.model";
 import { Company } from "./companies/companies.model";
+import { EmployeesModule } from './companies/employees/employees.module';
+import { Employee } from "./companies/employees/employees.model";
 
 
 @Module({
@@ -30,7 +32,7 @@ import { Company } from "./companies/companies.model";
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [Account, Role, City, AccountRoles, User, CompanyType, Company],
+            models: [Account, Role, City, AccountRoles, User, CompanyType, Company, Employee],
             autoLoadModels: true
           }),
         AccountsModule,
@@ -39,6 +41,7 @@ import { Company } from "./companies/companies.model";
         UsersModule,
         CompaniesModule,
         CompanyTypesModule,
+        EmployeesModule
     ]
 })
 export class AppModule{
