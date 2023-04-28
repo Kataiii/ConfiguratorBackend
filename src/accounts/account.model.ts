@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Model, Table, Column, DataType, ForeignKey } from "sequelize-typescript";
+import { Model, Table, Column, DataType, ForeignKey, BelongsToMany } from "sequelize-typescript";
 import { City } from "src/cities/cities.model";
 import { Role } from "src/roles/roles.model";
+import { AccountRoles } from "src/account-roles/account-roles.model";
 
 interface AccountCreationAttrs{
     email: string;
@@ -31,10 +32,12 @@ export class Account extends Model<Account, AccountCreationAttrs>{
     @Column({type: DataType.BOOLEAN, defaultValue: false})
     is_spam: boolean;
 
-    @ApiProperty({example: 1, description: 'Идентификатор роли', required: false})
-    @ForeignKey(() => Role)
-    @Column({type: DataType.INTEGER, defaultValue: 2})
-    role_id: number;
+    // @ApiProperty({example: 1, description: 'Идентификатор роли', required: false})
+    // @ForeignKey(() => Role)
+    // @Column({type: DataType.INTEGER, defaultValue: 2})
+    // role_id: number;
+    @BelongsToMany(() => Account, () => AccountRoles)
+    roles: Role[];
 
     @ApiProperty({example: 'image.png', description: 'Строка загрузки картинки', required: false})
     @Column({type: DataType.STRING, allowNull: true})
