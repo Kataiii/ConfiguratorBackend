@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common/enums';
+import { HttpException } from '@nestjs/common/exceptions';
 import { InjectModel } from '@nestjs/sequelize';
 import { CompaniesService } from 'src/companies/companies.service';
 import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
@@ -13,9 +15,7 @@ import { CreateAccountDto } from './dto/create-account.dto';
 @Injectable()
 export class AccountsService {
     constructor(@InjectModel(Account) private accountRepository: typeof Account,
-         private rolesService: RolesService,
-         private usersService: UsersService,
-         private companiesService: CompaniesService){}
+         private rolesService: RolesService){}
 
     async createAccount(dto: CreateAccountDto){
         const account = await this.accountRepository.create(dto);
@@ -32,6 +32,7 @@ export class AccountsService {
 
     async getAllAccountsWithRoles(){
         const accounts = await this.accountRepository.findAll({include: {all: true}});
+        if(accounts.length === 0) throw new HttpException({message: 'Аккаунты не найдены'}, HttpStatus.NOT_FOUND);
         return accounts;
     }
 

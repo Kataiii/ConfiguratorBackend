@@ -1,10 +1,9 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';
-import { CreateAccountCompanyDto } from './dto/create-account-company.dto';
-import { CreateAccountUserDto } from './dto/create-account-user.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 
 @ApiTags('Accounts')
@@ -14,6 +13,7 @@ export class AccountsController {
 
     @ApiOperation({summary: 'Get all accounts'})
     @ApiResponse({ status: 200, type: [Account]})
+    @ApiResponse({status: 401, description: 'Пользователь не авторизован'})
     @Get()
     getAll(){
         const accounts = this.accountService.getAllAccounts();
@@ -22,6 +22,8 @@ export class AccountsController {
 
     @ApiOperation({summary: 'Get all accounts with roles'})
     @ApiResponse({status: 200, type: [Account]})
+    @ApiResponse({status: 401, description: 'Пользователь не авторизован'})
+    @ApiResponse({status: 404, description: 'Аккаунты не найдены'})
     @Get('/account_with_roles')
     getAllWithRoles(){
         return this.accountService.getAllAccountsWithRoles();
@@ -33,18 +35,4 @@ export class AccountsController {
     create(@Body() accountDto: CreateAccountDto){
         return this.accountService.createAccount(accountDto);
     }
-
-    // @ApiOperation({summary: 'Create account with user'})
-    // @ApiResponse({status: 200, type: Account})
-    // @Post('/create_with_user')
-    // createAccountWithUser(@Body() accountWithUserDto: CreateAccountUserDto){
-    //     return this.accountService.createAccountWithUser(accountWithUserDto);
-    // }
-
-    // @ApiOperation({summary: 'Create account with company'})
-    // @ApiResponse({status: 200, type: Account})
-    // @Post('/create_with_company')
-    // createAccountWithCompany(@Body() accountWithCompanyDto: CreateAccountCompanyDto){
-    //     return this.accountService.createAccountWithCompany(accountWithCompanyDto);
-    // }
 }

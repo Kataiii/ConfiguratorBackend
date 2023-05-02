@@ -28,7 +28,8 @@ export class AuthService {
     private async register(dto: CreateAccountDto){
         let account = await this.accountsService.getAccountByEmail(dto.email);
         if(account != null) throw new HttpException("Такой аккаунт уже существует", HttpStatus.BAD_REQUEST);
-        account = await this.accountsService.createAccount(dto);
+        const hashPassword = await bcryptjs.hash(dto.password, 10);
+        account = await this.accountsService.createAccount(new CreateAccountDto(dto.email, hashPassword));
         return account;
     }
 
@@ -63,10 +64,11 @@ export class AuthService {
 
     private async validateAccount(dto: CreateAccountDto){
         const account = await this.accountsService.getAccountByEmail(dto.email);
-        const passwordEqual = await bcryptjs.compare(account.password, dto.password);
+        const passwordEqual = await bcryptjs.compare(dto.password, account.password);
         if(account && passwordEqual){
             return account;
         }
+
         throw new UnauthorizedException('Неверный пароль или логин');
     }
 }

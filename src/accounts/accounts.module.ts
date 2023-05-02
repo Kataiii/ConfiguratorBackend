@@ -8,6 +8,7 @@ import { AccountsService } from './accounts.service';
 import { RolesModule } from 'src/roles/roles.module';
 import { UsersModule } from 'src/users/users.module';
 import { CompaniesModule } from 'src/companies/companies.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [AccountsController],
@@ -16,7 +17,8 @@ import { CompaniesModule } from 'src/companies/companies.module';
     SequelizeModule.forFeature([Account, Role, AccountRoles]),
     RolesModule,
     UsersModule,
-    CompaniesModule
+    CompaniesModule,
+    AuthModule
   ],
   exports: [
     AccountsService
