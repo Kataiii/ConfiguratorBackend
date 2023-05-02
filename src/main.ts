@@ -2,7 +2,7 @@ import { NestFactory, Reflector } from "@nestjs/core";
 import { DocumentBuilder } from "@nestjs/swagger";
 import { SwaggerModule } from "@nestjs/swagger/dist";
 import { AppModule } from "./app.module";
-import { JwtAuthGuard } from "./auth/jwt-auth.guard";
+import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 
 async function start() {
     const PORT = process.env.PORT || 5000;

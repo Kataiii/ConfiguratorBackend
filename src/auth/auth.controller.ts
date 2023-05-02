@@ -5,7 +5,7 @@ import { CreateAccountUserDto } from 'src/accounts/dto/create-account-user.dto';
 import { CreateAccountDto } from 'src/accounts/dto/create-account.dto';
 import { AuthService } from './auth.service';
 import { Token } from './dto/token.dto';
-import { Public } from './public.decorator';
+import { Public } from './guards/decorators/public.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
