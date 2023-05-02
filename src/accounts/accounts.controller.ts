@@ -34,17 +34,17 @@ export class AccountsController {
         return this.accountService.createAccount(accountDto);
     }
 
-    @ApiOperation({summary: 'Create account with user'})
-    @ApiResponse({status: 200, type: Account})
-    @Post('/create_with_user')
-    createAccountWithUser(@Body() accountWithUserDto: CreateAccountUserDto){
-        return this.accountService.createAccountWithUser(accountWithUserDto);
-    }
+    // @ApiOperation({summary: 'Create account with user'})
+    // @ApiResponse({status: 200, type: Account})
+    // @Post('/create_with_user')
+    // createAccountWithUser(@Body() accountWithUserDto: CreateAccountUserDto){
+    //     return this.accountService.createAccountWithUser(accountWithUserDto);
+    // }
 
-    @ApiOperation({summary: 'Create account with company'})
-    @ApiResponse({status: 200, type: Account})
-    @Post('/create_with_company')
-    createAccountWithCompany(@Body() accountWithCompanyDto: CreateAccountCompanyDto){
-        return this.accountService.createAccountWithCompany(accountWithCompanyDto);
-    }
+    // @ApiOperation({summary: 'Create account with company'})
+    // @ApiResponse({status: 200, type: Account})
+    // @Post('/create_with_company')
+    // createAccountWithCompany(@Body() accountWithCompanyDto: CreateAccountCompanyDto){
+    //     return this.accountService.createAccountWithCompany(accountWithCompanyDto);
+    // }
 }

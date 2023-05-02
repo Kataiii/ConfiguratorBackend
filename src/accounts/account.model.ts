@@ -36,7 +36,7 @@ export class Account extends Model<Account, AccountCreationAttrs>{
     @Column({type: DataType.BOOLEAN, defaultValue: false})
     is_spam: boolean;
 
-    @BelongsToMany(() => Account, () => AccountRoles)
+    @BelongsToMany(() => Role, () => AccountRoles)
     roles: Role[];
 
     @ApiProperty({example: 'image.png', description: 'Строка загрузки картинки', required: false})
