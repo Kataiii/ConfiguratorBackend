@@ -12,37 +12,49 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { CreateAccountCompanyDto } from 'src/accounts/dto/create-account-company.dto';
 import { CompaniesService } from 'src/companies/companies.service';
 import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
+import { ActivationLinksService } from './activation_links/activation_links.service';
+import { TokensService } from './tokens/tokens.service';
+import { Ip } from '@nestjs/common/decorators';
 
 @Injectable()
 export class AuthService {
     constructor(private accountsService: AccountsService,
         private jwtService: JwtService,
         private usersService: UsersService,
-        private companiesService: CompaniesService){}
+        private companiesService: CompaniesService,
+        private activationLinksService: ActivationLinksService,
+        private tokensService: TokensService){}
 
     async login(dto: CreateAccountDto){
         const account = await this.validateAccount(dto);
         return this.generateToken(account);
     }
 
-    private async register(dto: CreateAccountDto){
+    private async register(dto: CreateAccountDto, ip){
         let account = await this.accountsService.getAccountByEmail(dto.email);
         if(account != null) throw new HttpException("Такой аккаунт уже существует", HttpStatus.BAD_REQUEST);
         const hashPassword = await bcryptjs.hash(dto.password, 10);
         account = await this.accountsService.createAccount(new CreateAccountDto(dto.email, hashPassword));
-        return account;
+
+        this.activationLinksService.create(account.id);
+
+        const refreshToken = this.tokensService.generateRefreshToken(account);
+        await this.tokensService.saveRefreshToken(refreshToken, account.id, ip);
+        const accessToken = this.generateToken(account);
+
+        return {account, accessToken, refreshToken};
     }
 
-    async registerUser(dto: CreateAccountUserDto){
-        let account = await this.register(new CreateAccountDto(dto.email, dto.password));
-        this.usersService.createUser(new CreateUserDto(account.id, dto.login));
-        return this.generateToken(account);
+    async registerUser(dto: CreateAccountUserDto, @Ip() ip){
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
+        this.usersService.createUser(new CreateUserDto(dtoAccountTokens.account.id, dto.login));
+        return dtoAccountTokens.accessToken;
     }
 
-    async registerCompany(dto: CreateAccountCompanyDto){
-        let account = await this.register(new CreateAccountDto(dto.email, dto.password));
+    async registerCompany(dto: CreateAccountCompanyDto, @Ip() ip){
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
         this.companiesService.create(new CreateCompanyDto(
-            account.id,
+            dtoAccountTokens.account.id,
             dto.company_name,
             dto.surname,
             dto.name,
@@ -52,7 +64,8 @@ export class AuthService {
             dto.inn_file,
             dto.official_letter
         ));
-        return this.generateToken(account);
+        //TODO это убрать,вытащить потом из функции register access токен
+        return dtoAccountTokens.accessToken;
     }
 
     private async generateToken(account: Account){
@@ -60,6 +73,31 @@ export class AuthService {
         return {
             token: this.jwtService.sign(payload)
         }
+    }
+
+    private async generateTokens(account: Account){
+        const payload = {email: account.email, id: account.id, roles: account.roles}
+        const accessToken = this.jwtService.sign(payload, {expiresIn: '15m'});
+        const refreshToken = this.jwtService.sign(payload, {expiresIn: '30d', encoding: process.env.PRIVATE_KEY_REFRESH})
+        return {
+            accessToken,
+            refreshToken
+        }
+    }
+
+    //TODO обновление access токена
+    async refresh(){
+
+    }
+
+    //TODO удаление всех токенов
+    async logout(){
+
+    }
+
+    //TODO получение сслки для подтверждения почты
+    async getActivateLink(){
+
     }
 
     private async validateAccount(dto: CreateAccountDto){

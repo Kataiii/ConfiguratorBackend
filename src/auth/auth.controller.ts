@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, Ip } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateAccountCompanyDto } from 'src/accounts/dto/create-account-company.dto';
 import { CreateAccountUserDto } from 'src/accounts/dto/create-account-user.dto';
@@ -26,8 +26,8 @@ export class AuthController {
     @ApiResponse({status: 400, description: 'Такой аккаунт уже существует'})
     @Public()
     @Post('/register/user')
-    registerUser(@Body() dto: CreateAccountUserDto){
-        return this.authService.registerUser(dto);
+    registerUser(@Body() dto: CreateAccountUserDto,  @Ip() ip){
+        return this.authService.registerUser(dto, ip);
     }
 
     @ApiOperation({summary: 'Registration company in system'})
@@ -35,7 +35,7 @@ export class AuthController {
     @ApiResponse({status: 400, description: 'Такой аккаунт уже существует'})
     @Public()
     @Post('register/company')
-    registerCompany(@Body() dto: CreateAccountCompanyDto){
-        return this.authService.registerCompany(dto);
+    registerCompany(@Body() dto: CreateAccountCompanyDto,  @Ip() ip){
+        return this.authService.registerCompany(dto, ip);
     }
 }

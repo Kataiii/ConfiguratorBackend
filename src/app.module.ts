@@ -17,6 +17,15 @@ import { Company } from "./companies/companies.model";
 import { EmployeesModule } from './companies/employees/employees.module';
 import { Employee } from "./companies/employees/employees.model";
 import { AuthModule } from './auth/auth.module';
+import { ProjectsModule } from './projects/projects.module';
+import { ConstructionTypesModule } from './projects/construction_types/construction_types.module';
+import { ConstructionType } from "./projects/construction_types/construction_types.mosel";
+import { Project } from "./projects/projects.model";
+import { TokensModule } from './auth/tokens/tokens.module';
+import { Token } from "./auth/tokens/tokens.model";
+import { ActivationLinksModule } from './auth/activation_links/activation_links.module';
+import { ActivationLink } from "./auth/activation_links/activation_links.model";
+import { MailServiceModule } from './auth/mail-service/mail-service.module';
 
 
 @Module({
@@ -33,7 +42,19 @@ import { AuthModule } from './auth/auth.module';
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [Account, Role, City, AccountRoles, User, CompanyType, Company, Employee],
+            models: [Account, 
+                    Role, 
+                    City, 
+                    AccountRoles, 
+                    User, 
+                    CompanyType, 
+                    Company, 
+                    Employee, 
+                    ConstructionType, 
+                    Project,
+                    Token,
+                    ActivationLink
+                ],
             autoLoadModels: true
           }),
         AccountsModule,
@@ -43,7 +64,12 @@ import { AuthModule } from './auth/auth.module';
         CompaniesModule,
         CompanyTypesModule,
         EmployeesModule,
-        AuthModule
+        AuthModule,
+        ProjectsModule,
+        ConstructionTypesModule,
+        TokensModule,
+        ActivationLinksModule,
+        MailServiceModule
     ]
 })
 export class AppModule{

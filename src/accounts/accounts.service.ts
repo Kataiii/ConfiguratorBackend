@@ -41,6 +41,11 @@ export class AccountsService {
         return account;
     }
 
+    async getAccountById(id: number){
+        const account = await this.accountRepository.findOne({where: {id}, include: {all: true}});
+        return account;
+    }
+
     // async createAccountWithUser(dto: CreateAccountUserDto){
     //     const dtoForAccount = new CreateAccountDto(dto.email, dto.password);
     //     const account = await this.createAccount(dtoForAccount);
