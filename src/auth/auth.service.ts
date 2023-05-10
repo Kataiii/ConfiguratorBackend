@@ -14,7 +14,6 @@ import { CompaniesService } from 'src/companies/companies.service';
 import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
 import { ActivationLinksService } from './activation_links/activation_links.service';
 import { TokensService } from './tokens/tokens.service';
-import { Ip } from '@nestjs/common/decorators';
 
 @Injectable()
 export class AuthService {
@@ -45,13 +44,14 @@ export class AuthService {
         return {account, accessToken, refreshToken};
     }
 
-    async registerUser(dto: CreateAccountUserDto, @Ip() ip){
+    async registerUser(dto: CreateAccountUserDto, ip){
         let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
         this.usersService.createUser(new CreateUserDto(dtoAccountTokens.account.id, dto.login));
-        return dtoAccountTokens.accessToken;
+        let {account, accessToken, refreshToken} = dtoAccountTokens;
+        return {accessToken, refreshToken};
     }
 
-    async registerCompany(dto: CreateAccountCompanyDto, @Ip() ip){
+    async registerCompany(dto: CreateAccountCompanyDto, ip){
         let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
         this.companiesService.create(new CreateCompanyDto(
             dtoAccountTokens.account.id,
@@ -64,25 +64,14 @@ export class AuthService {
             dto.inn_file,
             dto.official_letter
         ));
-        //TODO это убрать,вытащить потом из функции register access токен
-        return dtoAccountTokens.accessToken;
+        let {account, accessToken, refreshToken} = dtoAccountTokens;
+        return {accessToken, refreshToken};
     }
 
     private async generateToken(account: Account){
         const payload = {email: account.email, id: account.id, roles: account.roles}
-        return {
-            token: this.jwtService.sign(payload)
-        }
-    }
-
-    private async generateTokens(account: Account){
-        const payload = {email: account.email, id: account.id, roles: account.roles}
-        const accessToken = this.jwtService.sign(payload, {expiresIn: '15m'});
-        const refreshToken = this.jwtService.sign(payload, {expiresIn: '30d', encoding: process.env.PRIVATE_KEY_REFRESH})
-        return {
-            accessToken,
-            refreshToken
-        }
+        const tokenAccess = await this.jwtService.sign(payload);
+        return tokenAccess;
     }
 
     //TODO обновление access токена

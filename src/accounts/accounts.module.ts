@@ -9,6 +9,7 @@ import { RolesModule } from 'src/roles/roles.module';
 import { UsersModule } from 'src/users/users.module';
 import { CompaniesModule } from 'src/companies/companies.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { forwardRef } from '@nestjs/common/utils';
 
 @Module({
   controllers: [AccountsController],
@@ -18,7 +19,7 @@ import { AuthModule } from 'src/auth/auth.module';
     RolesModule,
     UsersModule,
     CompaniesModule,
-    AuthModule
+    forwardRef(() => AuthModule) 
   ],
   exports: [
     AccountsService

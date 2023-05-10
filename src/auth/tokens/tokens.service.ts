@@ -16,7 +16,12 @@ export class TokensService {
     }
 
     async saveRefreshToken(refresh_token: string, account_id: number, ip: string){
-        //Найти все токены по id пользователя и посмотреть какие уже умерли, все записи больше 30 дней стереть
+        const tokens = await this.tokensRepository.findAll({where: {account_id: account_id}});
+        const deleteTokens = tokens.filter(token => Date.now() - token.createdAt >= 30);
+        for(let i: number = 0; i < deleteTokens.length; i++){
+            await this.tokensRepository.destroy({where: {id: deleteTokens[i].id}});
+        }
+
         const token = await this.tokensRepository.create({
             refresh_token: refresh_token,
             account_id: account_id,

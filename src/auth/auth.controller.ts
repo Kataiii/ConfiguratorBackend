@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Ip } from '@nestjs/common';
+import { Controller, Post, Get, Body, Ip, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateAccountCompanyDto } from 'src/accounts/dto/create-account-company.dto';
 import { CreateAccountUserDto } from 'src/accounts/dto/create-account-user.dto';
@@ -6,6 +6,7 @@ import { CreateAccountDto } from 'src/accounts/dto/create-account.dto';
 import { AuthService } from './auth.service';
 import { Token } from './dto/token.dto';
 import { Public } from './guards/decorators/public.decorator';
+import { Request, Response } from 'express';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -26,8 +27,10 @@ export class AuthController {
     @ApiResponse({status: 400, description: 'Такой аккаунт уже существует'})
     @Public()
     @Post('/register/user')
-    registerUser(@Body() dto: CreateAccountUserDto,  @Ip() ip){
-        return this.authService.registerUser(dto, ip);
+    async registerUser(@Body() dto: CreateAccountUserDto,  @Ip() ip, @Res({ passthrough: true }) response: Response){
+        let tokens = await this.authService.registerUser(dto, ip);
+        response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
+        return tokens;
     }
 
     @ApiOperation({summary: 'Registration company in system'})
@@ -35,7 +38,9 @@ export class AuthController {
     @ApiResponse({status: 400, description: 'Такой аккаунт уже существует'})
     @Public()
     @Post('register/company')
-    registerCompany(@Body() dto: CreateAccountCompanyDto,  @Ip() ip){
-        return this.authService.registerCompany(dto, ip);
+    async registerCompany(@Body() dto: CreateAccountCompanyDto,  @Ip() ip, @Res({ passthrough: true }) response: Response){
+        let tokens = await this.authService.registerCompany(dto, ip);
+        response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
+        return tokens;
     }
 }
