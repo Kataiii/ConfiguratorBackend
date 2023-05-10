@@ -39,7 +39,7 @@ export class AuthService {
 
         const refreshToken = this.tokensService.generateRefreshToken(account);
         await this.tokensService.saveRefreshToken(refreshToken, account.id, ip);
-        const accessToken = this.generateToken(account);
+        const accessToken = await this.generateToken(account);
 
         return {account, accessToken, refreshToken};
     }

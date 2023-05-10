@@ -8,7 +8,7 @@ interface ActivationLinkCreateAttrs{
 
 @Table({tableName: 'activation_links', createdAt: true, updatedAt: false})
 export class ActivationLink extends Model<ActivationLink, ActivationLinkCreateAttrs>{
-    @Column({type: DataType.INTEGER, unique: true, primaryKey: true})
+    @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
     id: number;
 
     @Column({type: DataType.STRING, unique: false})

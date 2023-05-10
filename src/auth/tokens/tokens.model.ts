@@ -9,7 +9,7 @@ interface TokenCreateAttrs{
 
 @Table({tableName: 'refresh_tokens'})
 export class Token extends Model<Token, TokenCreateAttrs>{
-    @Column({type: DataType.INTEGER, unique: true, primaryKey: true})
+    @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
     id: number;
 
     @Column({type: DataType.STRING, unique: false})

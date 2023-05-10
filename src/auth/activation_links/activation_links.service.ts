@@ -13,9 +13,8 @@ export class ActivationLinksService {
 
     async create(account_id: number){
         const activationLinkString = uuid.v4();
-        const activationLink = await this.activationLinksRepository.create({activation_link: activationLinkString, account_id: account_id});
+        await this.activationLinksRepository.create({activation_link: activationLinkString, account_id: account_id});
         const account = await this.accountsService.getAccountById(account_id);
-        //TODO подправить activationLinkString
-        await this.mailService.sendActivationMail(account.email, activationLinkString);
+        await this.mailService.sendActivationMail(account.email, `${process.env.API_URL}/api/activation-links/activationLinkString`);
     }
 }
