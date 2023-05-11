@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
 import { InjectModel } from '@nestjs/sequelize';
+import { where } from 'sequelize';
 import { CompaniesService } from 'src/companies/companies.service';
 import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
 import { RolesService } from 'src/roles/roles.service';
@@ -44,6 +45,11 @@ export class AccountsService {
     async getAccountById(id: number){
         const account = await this.accountRepository.findOne({where: {id}, include: {all: true}});
         return account;
+    }
+
+    async Update(account: Account, account_id: number){
+        const accountUpdated = await this.accountRepository.update(account, {where: {id: account_id}});
+        return accountUpdated;
     }
 
     // async createAccountWithUser(dto: CreateAccountUserDto){

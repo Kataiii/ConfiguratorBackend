@@ -35,12 +35,12 @@ export class MailServiceService {
         };
         
         this.transporter.sendMail(mailOptions, function (error, success) {
-            if (error) {
-                console.log(error);
-            }
-            else {
-                console.log("Server is ready to take our messages");
-            }
+            // if (error) {
+            //     console.log(error);
+            // }
+            // else {
+            //     console.log("Server is ready to take our messages");
+            // }
         });
     }
 }

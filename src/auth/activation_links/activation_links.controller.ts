@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ActivationLinksService } from './activation_links.service';
+import { Request, Response } from 'express';
 
 @Controller('activation-links')
 export class ActivationLinksController {
     constructor(private actionLinksService: ActivationLinksService){}
 
     @Get('/activate/:link')
-    activateLink(){
-        //TODO функцию активации
+    async activateLink(@Param('link') link : string, @Res({ passthrough: true }) response: Response){
+        await this.actionLinksService.activate(link);
+        return response.redirect(process.env.CLIENT_URL);
     }
 }

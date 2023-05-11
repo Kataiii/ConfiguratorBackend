@@ -21,7 +21,7 @@ export class Account extends Model<Account, AccountCreationAttrs>{
 
     @ApiProperty({example: false, description: 'Проверка почты', required: false})
     @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
-    is_checked_email: string; 
+    is_checked_email: boolean; 
 
     @ApiProperty({example: 'Qwerty123*', description: 'Пароль', required: true})
     @Column({type: DataType.STRING, allowNull: false})
