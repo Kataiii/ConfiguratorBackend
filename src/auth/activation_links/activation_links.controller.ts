@@ -1,7 +1,9 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ActivationLinksService } from './activation_links.service';
 import { Request, Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Activation-Links')
 @Controller('activation-links')
 export class ActivationLinksController {
     constructor(private actionLinksService: ActivationLinksService){}

@@ -6,7 +6,8 @@ import { CreateAccountDto } from 'src/accounts/dto/create-account.dto';
 import { AuthService } from './auth.service';
 import { Token } from './dto/token.dto';
 import { Public } from './guards/decorators/public.decorator';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
+import { Req } from '@nestjs/common/decorators';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -42,5 +43,15 @@ export class AuthController {
         let tokens = await this.authService.registerCompany(dto, ip);
         response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
         return tokens;
+    }
+
+    @ApiOperation({summary: 'Log out of the system'})
+    @ApiResponse({status: 200, type: Token})
+    @Get('/logout')
+    async logout(@Req() request: Request, @Res({passthrough: true}) response: Response){
+        let refreshToken = request.cookies;
+        const token = await this.authService.logout(refreshToken);
+        response.clearCookie('refreshToken');
+        return token;
     }
 }

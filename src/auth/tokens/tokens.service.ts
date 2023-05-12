@@ -29,4 +29,9 @@ export class TokensService {
         });
         return token;
     }
+
+    async removeToken(refreshToken) {
+        const tokenData = await this.tokensRepository.destroy({ where: { refresh_token: String(refreshToken) } });
+        return tokenData;
+    }
 }

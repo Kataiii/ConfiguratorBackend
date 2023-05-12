@@ -79,14 +79,10 @@ export class AuthService {
 
     }
 
-    //TODO удаление всех токенов
-    async logout(){
-
-    }
-
-    //TODO получение сслки для подтверждения почты
-    async getActivateLink(){
-
+    async logout(refreshToken){
+        const tokenValue = refreshToken.refreshToken;
+        const token = await this.tokensService.removeToken(tokenValue);
+        return token;
     }
 
     private async validateAccount(dto: CreateAccountDto){
