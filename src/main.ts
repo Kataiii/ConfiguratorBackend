@@ -19,7 +19,7 @@ async function start() {
     SwaggerModule.setup('/api/docs', app, document)
 
     const reflector = app.get(Reflector);
-    app.useGlobalGuards(new JwtAuthGuard( null ,reflector));
+    app.useGlobalGuards(new JwtAuthGuard(reflector));
     app.use(cookieParser());
     await app.listen(PORT, () => console.log(`Server start on port = ${PORT}`))
 }

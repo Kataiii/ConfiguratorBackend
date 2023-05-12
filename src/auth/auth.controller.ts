@@ -8,6 +8,7 @@ import { Token } from './dto/token.dto';
 import { Public } from './guards/decorators/public.decorator';
 import { Request, response, Response } from 'express';
 import { Req } from '@nestjs/common/decorators';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -19,8 +20,10 @@ export class AuthController {
     @ApiResponse({status: 401, description: 'Неверный пароль или логин'})
     @Public()
     @Post('/login')
-    login(@Body() dto : CreateAccountDto){
-        return this.authService.login(dto);
+    async login(@Body() dto : CreateAccountDto, @Res({ passthrough: true }) response: Response){
+        let tokens = await this.authService.login(dto);
+        response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
+        return tokens;
     }
 
     @ApiOperation({summary: 'Registration user in system'})
@@ -47,11 +50,23 @@ export class AuthController {
 
     @ApiOperation({summary: 'Log out of the system'})
     @ApiResponse({status: 200, type: Token})
-    @Get('/logout')
+    @Post('/logout')
+    @Public()
     async logout(@Req() request: Request, @Res({passthrough: true}) response: Response){
         let refreshToken = request.cookies;
         const token = await this.authService.logout(refreshToken);
         response.clearCookie('refreshToken');
-        return token;
+        return response.redirect(process.env.CLIENT_URL);
+    }
+
+    @ApiOperation({summary: 'Refresh token'})
+    @ApiResponse({status: 200, type: Token})
+    @Get('/refresh')
+    async refresh(@Req() request: Request, @Ip() ip){
+        const refreshToken = request.cookies;
+        if(!refreshToken){
+            throw new UnauthorizedException;
+        }
+        return await this.authService.refresh(refreshToken, ip);
     }
 }

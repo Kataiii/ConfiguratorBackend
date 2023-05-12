@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException, UnauthorizedException } from '@nestjs/common/exceptions';
-import { JwtService } from '@nestjs/jwt/dist';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { CreateAccountDto } from 'src/accounts/dto/create-account.dto';
 import * as bcryptjs from 'bcryptjs';
@@ -14,11 +13,11 @@ import { CompaniesService } from 'src/companies/companies.service';
 import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
 import { ActivationLinksService } from './activation_links/activation_links.service';
 import { TokensService } from './tokens/tokens.service';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
     constructor(private accountsService: AccountsService,
-        private jwtService: JwtService,
         private usersService: UsersService,
         private companiesService: CompaniesService,
         private activationLinksService: ActivationLinksService,
@@ -26,7 +25,9 @@ export class AuthService {
 
     async login(dto: CreateAccountDto){
         const account = await this.validateAccount(dto);
-        return this.generateToken(account);
+        const refreshToken = this.tokensService.generateRefreshToken(account);
+        const accessToken = await this.generateToken(account)
+        return {refreshToken, accessToken};
     }
 
     private async register(dto: CreateAccountDto, ip){
@@ -70,13 +71,31 @@ export class AuthService {
 
     private async generateToken(account: Account){
         const payload = {email: account.email, id: account.id, roles: account.roles}
-        const tokenAccess = await this.jwtService.sign(payload);
+        const tokenAccess = await jwt.sign(payload, process.env.PRIVATE_KEY, {expiresIn: '15m'});
         return tokenAccess;
     }
 
-    //TODO обновление access токена
-    async refresh(){
+    async refresh(refreshToken, ip){
+        const accountData = await this.tokensService.validateRefreshToken(refreshToken);
+        const tokenData = await this.tokensService.findRefreshToken(refreshToken);
+        if(!accountData || !tokenData){
+            throw new UnauthorizedException;
+        }
+        const account = await this.accountsService.getAccountById(accountData.id);
+        const refreshTokenNew = this.tokensService.generateRefreshToken(account);
+        await this.tokensService.saveRefreshToken(refreshToken, account.id, ip);
+        const accessToken = await this.generateToken(account);
 
+        return {account, accessToken, refreshTokenNew};
+    }
+
+    async validateAccessToken(accessToken){
+        try{
+            const accountData = jwt.verify(accessToken, process.env.PRIVATE_KEY);
+            return accountData;
+        } catch(e){
+            return null;
+        }
     }
 
     async logout(refreshToken){

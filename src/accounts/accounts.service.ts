@@ -47,33 +47,8 @@ export class AccountsService {
         return account;
     }
 
-    async Update(account: Account, account_id: number){
-        const accountUpdated = await this.accountRepository.update(account, {where: {id: account_id}});
+    async update(account_id: number){
+        const accountUpdated = await this.accountRepository.update({is_checked_email: true}, {where: {id: account_id}});
         return accountUpdated;
     }
-
-    // async createAccountWithUser(dto: CreateAccountUserDto){
-    //     const dtoForAccount = new CreateAccountDto(dto.email, dto.password);
-    //     const account = await this.createAccount(dtoForAccount);
-    //     const dtoForUser = new CreateUserDto(account.id, dto.login);
-    //     const user = await this.usersService.createUser(dtoForUser);
-    //     return account;
-    // }
-
-    // async createAccountWithCompany(dto: CreateAccountCompanyDto){
-    //     const dtoForAccount = new CreateAccountDto(dto.email, dto.password);
-    //     const account = await this.createAccount(dtoForAccount);
-    //     const dtoForCompany = new CreateCompanyDto(
-    //         account.id, 
-    //         dto.company_name, 
-    //         dto.surname,
-    //         dto.name,
-    //         dto.patronymic,
-    //         dto.phone_number,
-    //         dto.company_type_id,
-    //         dto.inn_file,
-    //         dto.official_letter);
-    //     const company = await this.companiesService.create(dtoForCompany);
-    //     return company;
-    // }
 }

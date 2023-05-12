@@ -15,7 +15,7 @@ export class ActivationLinksService {
         const activationLinkString = uuid.v4();
         await this.activationLinksRepository.create({activation_link: activationLinkString, account_id: account_id});
         const account = await this.accountsService.getAccountById(account_id);
-        await this.mailService.sendActivationMail(account.email, `${process.env.API_URL}/api/activation-links/activationLinkString`);
+        await this.mailService.sendActivationMail(account.email, `${process.env.API_URL}/activation-links/activate/${activationLinkString}`);
     }
 
     async activate(activationLink){
@@ -28,6 +28,6 @@ export class ActivationLinksService {
             throw new HttpException( 'Некорректная ссылка активации', HttpStatus.BAD_REQUEST);
         }
         account.is_checked_email = true;
-        await this.accountsService.Update( account, account.id);
+        await this.accountsService.update(account.id);
     }
 }

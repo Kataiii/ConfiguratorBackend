@@ -3,16 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { Account } from 'src/accounts/account.model';
 import { Token } from './tokens.model';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class TokensService {
-    constructor(@InjectModel(Token) private tokensRepository: typeof Token,
-        private jwtService: JwtService){}
+    constructor(@InjectModel(Token) private tokensRepository: typeof Token){}
 
-    //TODO создание refresh токена
     generateRefreshToken(account: Account): string{
         const payload = {email: account.email, id: account.id, roles: account.roles}
-        return this.jwtService.sign(payload);
+        return jwt.sign(payload, process.env.PRIVATE_KEY_REFRESH, {expiresIn: '30d'});
     }
 
     async saveRefreshToken(refresh_token: string, account_id: number, ip: string){
@@ -32,6 +31,20 @@ export class TokensService {
 
     async removeToken(refreshToken) {
         const tokenData = await this.tokensRepository.destroy({ where: { refresh_token: String(refreshToken) } });
+        return tokenData;
+    }
+
+    async validateRefreshToken(refreshToken){
+        try{
+            const accountData = <jwt.JwtPayload>jwt.verify(refreshToken, process.env.PRIVATE_KEY_REFRESH);
+            return accountData;
+        } catch(e){
+            return null;
+        }
+    }
+
+    async findRefreshToken(refreshToken){
+        const tokenData = await this.tokensRepository.findOne({where: {refresh_token: refreshToken}});
         return tokenData;
     }
 }

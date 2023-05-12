@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { forwardRef } from '@nestjs/common/utils';
-import { JwtModule } from '@nestjs/jwt';
 import { AccountsModule } from 'src/accounts/accounts.module';
 import { CompaniesModule } from 'src/companies/companies.module';
 import { UsersModule } from 'src/users/users.module';
@@ -18,17 +17,10 @@ import { TokensModule } from './tokens/tokens.module';
     UsersModule,
     CompaniesModule,
     ActivationLinksModule,
-    TokensModule,
-    JwtModule.register({
-      secret: process.env.PRIVATE_KEY || 'SECRET',
-      signOptions: {
-        expiresIn: '15m'
-      }
-    })
+    TokensModule
   ],
   exports: [
-    AuthModule,
-    JwtModule
+    AuthModule
   ]
 })
 export class AuthModule {}
