@@ -1,7 +1,9 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -15,9 +17,11 @@ export class AccountsController {
     @ApiResponse({ status: 200, type: [Account]})
     @ApiResponse({status: 401, description: 'Пользователь не авторизован'})
     @Get()
+    @Roles('admin')
+    @UseGuards(RolesAuthGuard)
     getAll(){
         const accounts = this.accountService.getAllAccounts();
-        return this.accountService.getAllAccounts();
+        return accounts;
     }
 
     @ApiOperation({summary: 'Get all accounts with roles'})

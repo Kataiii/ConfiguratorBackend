@@ -1,14 +1,14 @@
-import { CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Observable } from "rxjs";
 import {Reflector} from "@nestjs/core";
-import { JwtService } from "@nestjs/jwt";
 import { ROLES_KEY } from "./decorators/roles-auth.decorator";
 import { HttpException } from "@nestjs/common/exceptions";
 import { HttpStatus } from "@nestjs/common/enums";
+import * as jwt from 'jsonwebtoken';
 
+@Injectable()
 export class RolesAuthGuard implements CanActivate{
-    constructor(private jwtService: JwtService,
-        private readonly reflector: Reflector){}
+    constructor(private readonly reflector: Reflector){}
 
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const req = context.switchToHttp().getRequest();
@@ -29,7 +29,7 @@ export class RolesAuthGuard implements CanActivate{
             if(bearer !== 'Bearer' || !token){
                 throw new UnauthorizedException({message: 'Пользователь не авторизован'})
             }
-            const account = this.jwtService.verify(token);
+            const account = <jwt.JwtPayload>jwt.verify(token, process.env.PRIVATE_KEY);
             req.account = account;
             return account.roles.some(role => requiredRoles.includes(role.name));
         } catch(e){

@@ -9,6 +9,7 @@ import { Public } from './guards/decorators/public.decorator';
 import { Request, response, Response } from 'express';
 import { Req } from '@nestjs/common/decorators';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
+import {stringify} from 'flatted';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,8 +21,8 @@ export class AuthController {
     @ApiResponse({status: 401, description: 'Неверный пароль или логин'})
     @Public()
     @Post('/login')
-    async login(@Body() dto : CreateAccountDto, @Res({ passthrough: true }) response: Response){
-        let tokens = await this.authService.login(dto);
+    async login(@Body() dto : CreateAccountDto, @Res({ passthrough: true }) response: Response, @Ip() ip){
+        let tokens = await this.authService.login(dto, ip);
         response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
         return tokens;
     }
@@ -62,8 +63,12 @@ export class AuthController {
     @ApiOperation({summary: 'Refresh token'})
     @ApiResponse({status: 200, type: Token})
     @Get('/refresh')
+    @Public()
     async refresh(@Req() request: Request, @Ip() ip){
-        const refreshToken = request.cookies;
+        const refresh = request.cookies;
+        let refreshToken = stringify(refresh);
+        refreshToken = refreshToken.slice(refreshToken.indexOf(",")+2, refreshToken.length - 2);
+ 
         if(!refreshToken){
             throw new UnauthorizedException;
         }

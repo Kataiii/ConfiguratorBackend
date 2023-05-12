@@ -23,9 +23,10 @@ export class AuthService {
         private activationLinksService: ActivationLinksService,
         private tokensService: TokensService){}
 
-    async login(dto: CreateAccountDto){
+    async login(dto: CreateAccountDto, ip){
         const account = await this.validateAccount(dto);
         const refreshToken = this.tokensService.generateRefreshToken(account);
+        await this.tokensService.saveRefreshToken(refreshToken, account.id, ip);
         const accessToken = await this.generateToken(account)
         return {refreshToken, accessToken};
     }
@@ -78,6 +79,7 @@ export class AuthService {
     async refresh(refreshToken, ip){
         const accountData = await this.tokensService.validateRefreshToken(refreshToken);
         const tokenData = await this.tokensService.findRefreshToken(refreshToken);
+        console.log('token data ', tokenData);
         if(!accountData || !tokenData){
             throw new UnauthorizedException;
         }
