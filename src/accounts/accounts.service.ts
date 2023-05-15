@@ -9,6 +9,8 @@ import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { Account } from './account.model';
+import { AddRoleDto } from './dto/add-role.dto';
+import { BanAccountDto } from './dto/ban-account.dto';
 import { CreateAccountCompanyDto } from './dto/create-account-company.dto';
 import { CreateAccountUserDto } from './dto/create-account-user.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -50,5 +52,21 @@ export class AccountsService {
     async update(account_id: number){
         const accountUpdated = await this.accountRepository.update({is_checked_email: true}, {where: {id: account_id}});
         return accountUpdated;
+    }
+
+    async addRole(dto: AddRoleDto) {
+        const account = await this.getAccountById(dto.account_id);
+        const role = await this.rolesService.getRoleByName(dto.value);
+        if(role && account){
+            await account.$add('roles', role.id);
+            return await this.getAccountById(dto.account_id);
+        }
+        throw new HttpException('ПОльзователь или роль не найдены', HttpStatus.NOT_FOUND);
+    }
+
+    async ban(dto: BanAccountDto) {
+        const account = await this.getAccountById(dto.account_id);
+        //TODO сделать таблицу забаненных пользователей
+        return account;
     }
 }

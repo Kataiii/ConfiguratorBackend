@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConstructionTypesController } from './construction_types.controller';
-import { ConstructionType } from './construction_types.mosel';
+import { ConstructionType } from './construction_types.model';
 import { ConstructionTypesService } from './construction_types.service';
 
 @Module({

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { City } from './cities.model';
 import { CitiesService } from './cities.service';
@@ -21,5 +21,12 @@ export class CitiesController {
     @Get()
     getAll(){
         return this.citiesService.getAllCities();
+    }
+
+    @ApiOperation({summary: 'Get city by id'})
+    @ApiResponse({status: 200, type: City})
+    @Get('/:id')
+    getById(@Param('id') id : number){
+        return this.citiesService.getById(id);
     }
 }

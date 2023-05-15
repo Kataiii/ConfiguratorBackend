@@ -16,4 +16,8 @@ export class CitiesService {
         const city = await this.cityRepository.create(dto);
         return city;
     }
+
+    async getById(id: number){
+        return await this.cityRepository.findOne({where: {id: id}});
+    }
 }

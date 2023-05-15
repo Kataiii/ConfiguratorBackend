@@ -19,13 +19,14 @@ import { Employee } from "./companies/employees/employees.model";
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ConstructionTypesModule } from './projects/construction_types/construction_types.module';
-import { ConstructionType } from "./projects/construction_types/construction_types.mosel";
+import { ConstructionType } from "./projects/construction_types/construction_types.model";
 import { Project } from "./projects/projects.model";
 import { TokensModule } from './auth/tokens/tokens.module';
 import { Token } from "./auth/tokens/tokens.model";
 import { ActivationLinksModule } from './auth/activation_links/activation_links.module';
 import { ActivationLink } from "./auth/activation_links/activation_links.model";
 import { MailServiceModule } from './auth/mail-service/mail-service.module';
+import { FilesModule } from './files/files.module';
 
 
 @Module({
@@ -69,7 +70,8 @@ import { MailServiceModule } from './auth/mail-service/mail-service.module';
         ConstructionTypesModule,
         TokensModule,
         ActivationLinksModule,
-        MailServiceModule
+        MailServiceModule,
+        FilesModule
     ]
 })
 export class AppModule{

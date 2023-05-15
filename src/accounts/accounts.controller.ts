@@ -6,6 +6,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';
+import { AddRoleDto } from './dto/add-role.dto';
+import { BanAccountDto } from './dto/ban-account.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 
 @ApiTags('Accounts')
@@ -38,5 +40,23 @@ export class AccountsController {
     @Post()
     create(@Body() accountDto: CreateAccountDto){
         return this.accountService.createAccount(accountDto);
+    }
+
+    @ApiOperation({summary: 'Add role for account'})
+    @ApiResponse({status: 200})
+    @Roles('admin', 'company')
+    @UseGuards(RolesAuthGuard)
+    @Post('/role')
+    addRole(@Body() dto: AddRoleDto){
+        return this.accountService.addRole(dto);
+    }
+
+    @ApiOperation({summary: 'Delete role for account'})
+    @ApiResponse({status: 200})
+    @Roles('admin')
+    @UseGuards(RolesAuthGuard)
+    @Post('/ban')
+    ban(@Body() dto: BanAccountDto){
+        return this.accountService.ban(dto);
     }
 }
