@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -17,5 +17,12 @@ export class ProjectsController {
     async create(@Body() dto: CreateProjectDto,
         @UploadedFiles() files){
             return await this.projectsService.create(dto, files);
+    }
+
+    @ApiOperation({summary: 'Get all projects in folder'})
+    @ApiResponse({ status: 200, type: [Project]})
+    @Get('/folder/:id')
+    async getProjectsByFolderId(@Param('id') id : number){
+        return await this.projectsService.getProjectsByFolderId(id);
     }
 }

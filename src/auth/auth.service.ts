@@ -53,7 +53,7 @@ export class AuthService {
         return {accessToken, refreshToken};
     }
 
-    async registerCompany(dto: CreateAccountCompanyDto, ip){
+    async registerCompany(dto: CreateAccountCompanyDto, ip, files: any[]){
         let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
         this.companiesService.create(new CreateCompanyDto(
             dtoAccountTokens.account.id,
@@ -62,10 +62,8 @@ export class AuthService {
             dto.name,
             dto.patronymic,
             dto.phone_number,
-            dto.company_type_id,
-            dto.inn_file,
-            dto.official_letter
-        ));
+            dto.company_type_id
+        ), files);
         let {account, accessToken, refreshToken} = dtoAccountTokens;
         return {accessToken, refreshToken};
     }

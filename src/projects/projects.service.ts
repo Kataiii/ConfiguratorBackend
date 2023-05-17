@@ -15,4 +15,12 @@ export class ProjectsService {
         const project = await this.projectsRepository.create({...dto, preview: previewFileName, save_file: saveFileName});
         return project;
     }
+
+    async getAll(){
+        return await this.projectsRepository.findAll();
+    }
+
+    async getProjectsByFolderId(folder_id: number){
+        return await this.projectsRepository.findAll({where: {folder_id: folder_id}})
+    }
 }

@@ -27,6 +27,9 @@ import { ActivationLinksModule } from './auth/activation_links/activation_links.
 import { ActivationLink } from "./auth/activation_links/activation_links.model";
 import { MailServiceModule } from './auth/mail-service/mail-service.module';
 import { FilesModule } from './files/files.module';
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { FolderProjectsModule } from './folder-projects/folder-projects.module';
+import * as path from "path";
 
 
 @Module({
@@ -35,6 +38,9 @@ import { FilesModule } from './files/files.module';
     imports: [
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`
+        }),
+        ServeStaticModule.forRoot({
+            rootPath: path.resolve(__dirname, 'static'),
         }),
         SequelizeModule.forRoot({
             dialect: 'postgres',
@@ -71,7 +77,8 @@ import { FilesModule } from './files/files.module';
         TokensModule,
         ActivationLinksModule,
         MailServiceModule,
-        FilesModule
+        FilesModule,
+        FolderProjectsModule
     ]
 })
 export class AppModule{

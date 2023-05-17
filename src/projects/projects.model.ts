@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { FolderProjects } from "src/folder-projects/folder-projects.model";
 
 interface ProjectCreateAttrs{
     name: string;
@@ -34,4 +35,9 @@ export class Project extends Model<Project, ProjectCreateAttrs>{
     @ApiProperty({example: 'save.какое-то расширение', description: 'Путь к расположению файла', required: false})
     @Column({type: DataType.STRING, unique: false, allowNull: false})
     save_file: string;
+
+    @ApiProperty({example: 1, description: 'Id папки', required: false})
+    @Column({type: DataType.INTEGER, unique: false, allowNull: false})
+    @ForeignKey(() => FolderProjects)
+    folder_id: number;
 }

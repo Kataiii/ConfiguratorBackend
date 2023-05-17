@@ -22,13 +22,7 @@ export class CreateCompanyDto{
     @ApiProperty({example: 1, description: 'Id типа компании', required: true})
     company_type_id: number;
 
-    @ApiProperty({example: 'inn.png', description: 'Строка загрузки файла с инн', required: true})
-    inn_file: string;
-
-    @ApiProperty({example: 'official_letter.png', description: 'Строка загрузки файла с письмом компании', required: true})
-    official_letter: string;
-
-    constructor(id, company_name, surname, name, patronymic, phone_number, company_type_id, inn_file, official_letter){
+    constructor(id, company_name, surname, name, patronymic, phone_number, company_type_id){
         this.id = id;
         this.company_name = company_name;
         this.surname = surname;
@@ -36,7 +30,5 @@ export class CreateCompanyDto{
         if(patronymic != null || patronymic != undefined) this.patronymic = patronymic;
         this.phone_number = phone_number;
         this.company_type_id = company_type_id;
-        this.inn_file = inn_file;
-        this.official_letter = official_letter;
     }
 }

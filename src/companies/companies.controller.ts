@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Company } from './companies.model';
 import { CompaniesService } from './companies.service';
@@ -12,8 +13,9 @@ export class CompaniesController {
     @ApiOperation({summary: 'Create company'})
     @ApiResponse({ status: 200, type: Company})
     @Post()
-    create(dto: CreateCompanyDto){
-        return this.companiesService.create(dto);
+    @UseInterceptors(FilesInterceptor('files'))
+    create(dto: CreateCompanyDto, @UploadedFiles() files){
+        return this.companiesService.create(dto, files);
     }
 
     @ApiOperation({summary: 'Get all companies'})

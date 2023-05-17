@@ -7,9 +7,10 @@ import { AuthService } from './auth.service';
 import { Token } from './dto/token.dto';
 import { Public } from './guards/decorators/public.decorator';
 import { Request, response, Response } from 'express';
-import { Req } from '@nestjs/common/decorators';
+import { Req, UploadedFiles, UseInterceptors } from '@nestjs/common/decorators';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import {stringify} from 'flatted';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,10 +42,11 @@ export class AuthController {
     @ApiOperation({summary: 'Registration company in system'})
     @ApiResponse({ status: 200, type: Token})
     @ApiResponse({status: 400, description: 'Такой аккаунт уже существует'})
+    @UseInterceptors(FilesInterceptor('files'))
     @Public()
     @Post('register/company')
-    async registerCompany(@Body() dto: CreateAccountCompanyDto,  @Ip() ip, @Res({ passthrough: true }) response: Response){
-        let tokens = await this.authService.registerCompany(dto, ip);
+    async registerCompany(@Body() dto: CreateAccountCompanyDto,  @Ip() ip, @Res({ passthrough: true }) response: Response, @UploadedFiles() files){
+        let tokens = await this.authService.registerCompany(dto, ip, files);
         response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
         return tokens;
     }
