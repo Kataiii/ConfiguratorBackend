@@ -32,6 +32,8 @@ import { FolderProjectsModule } from './folder-projects/folder-projects.module';
 import * as path from "path";
 import { AccountsProjects } from "./accounts-projects/accounts-ptojects.model";
 import { AccountsProjectsModule } from './accounts-projects/accounts-projects.module';
+import { ProjectStatusesModule } from './projects/project-statuses/project-statuses.module';
+import { ProjectStatuses } from "./projects/project-statuses/project-statuses.model";
 
 
 @Module({
@@ -63,7 +65,8 @@ import { AccountsProjectsModule } from './accounts-projects/accounts-projects.mo
                     Project,
                     Token,
                     ActivationLink,
-                    AccountsProjects
+                    AccountsProjects,
+                    ProjectStatuses
                 ],
             autoLoadModels: true
           }),
@@ -82,7 +85,8 @@ import { AccountsProjectsModule } from './accounts-projects/accounts-projects.mo
         MailServiceModule,
         FilesModule,
         FolderProjectsModule,
-        AccountsProjectsModule
+        AccountsProjectsModule,
+        ProjectStatusesModule
     ]
 })
 export class AppModule{
