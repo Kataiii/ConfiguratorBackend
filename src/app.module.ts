@@ -30,6 +30,8 @@ import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { FolderProjectsModule } from './folder-projects/folder-projects.module';
 import * as path from "path";
+import { AccountsProjects } from "./accounts-projects/accounts-ptojects.model";
+import { AccountsProjectsModule } from './accounts-projects/accounts-projects.module';
 
 
 @Module({
@@ -60,7 +62,8 @@ import * as path from "path";
                     ConstructionType, 
                     Project,
                     Token,
-                    ActivationLink
+                    ActivationLink,
+                    AccountsProjects
                 ],
             autoLoadModels: true
           }),
@@ -78,7 +81,8 @@ import * as path from "path";
         ActivationLinksModule,
         MailServiceModule,
         FilesModule,
-        FolderProjectsModule
+        FolderProjectsModule,
+        AccountsProjectsModule
     ]
 })
 export class AppModule{

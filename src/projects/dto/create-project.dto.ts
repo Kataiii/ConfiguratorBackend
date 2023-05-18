@@ -9,4 +9,7 @@ export class CreateProjectDto{
 
     @ApiProperty({example: 1, description: 'Количество этажей', required: true})
     floor_number: number;
+
+    @ApiProperty({example: 1, description: 'Id папки', required: true})
+    folder_id: number;
 }

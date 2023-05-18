@@ -22,7 +22,7 @@ import { TokensModule } from './tokens/tokens.module';
     FolderProjectsModule
   ],
   exports: [
-    AuthModule
+    AuthService
   ]
 })
 export class AuthModule {}

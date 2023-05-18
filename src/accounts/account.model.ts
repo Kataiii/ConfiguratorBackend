@@ -3,6 +3,8 @@ import { Model, Table, Column, DataType, ForeignKey, BelongsToMany } from "seque
 import { City } from "src/cities/cities.model";
 import { Role } from "src/roles/roles.model";
 import { AccountRoles } from "src/account-roles/account-roles.model";
+import { Project } from "src/projects/projects.model";
+import { AccountsProjects } from "src/accounts-projects/accounts-ptojects.model";
 
 interface AccountCreationAttrs{
     email: string;
