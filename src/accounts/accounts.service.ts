@@ -9,7 +9,7 @@ import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { Account } from './account.model';
-import { AddRoleDto } from './dto/add-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { BanAccountDto } from './dto/ban-account.dto';
 import { CreateAccountCompanyDto } from './dto/create-account-company.dto';
 import { CreateAccountUserDto } from './dto/create-account-user.dto';
@@ -54,14 +54,30 @@ export class AccountsService {
         return accountUpdated;
     }
 
-    async addRole(dto: AddRoleDto) {
+    async addRole(dto: UpdateRoleDto) {
         const account = await this.getAccountById(dto.account_id);
         const role = await this.rolesService.getRoleByName(dto.value);
         if(role && account){
             await account.$add('roles', role.id);
             return await this.getAccountById(dto.account_id);
         }
-        throw new HttpException('ПОльзователь или роль не найдены', HttpStatus.NOT_FOUND);
+        throw new HttpException('Пользователь или роль не найдены', HttpStatus.NOT_FOUND);
+    }
+
+    async deleteRole(dto: UpdateRoleDto){
+        const account = await this.getAccountById(dto.account_id);
+        const role = await this.rolesService.getRoleByName(dto.value);
+        if(role && account){
+            await account.$remove('roles', role.id);
+            return await this.getAccountById(dto.account_id);
+        }
+        throw new HttpException('Пользователь или роль не найдены', HttpStatus.NOT_FOUND);
+    }
+
+    async addRoleForCompany(account_id: number){
+        await this.addRole({value: 'company', account_id: account_id});
+        await this.deleteRole({value: 'user', account_id: account_id});
+        return account_id;
     }
 
     async ban(dto: BanAccountDto) {

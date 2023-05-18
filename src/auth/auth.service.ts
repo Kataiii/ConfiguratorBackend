@@ -33,12 +33,14 @@ export class AuthService {
         return {refreshToken, accessToken};
     }
 
-    private async register(dto: CreateAccountDto, ip){
+    private async register(dto: CreateAccountDto, ip, isCompany: boolean){
         let account = await this.accountsService.getAccountByEmail(dto.email);
         if(account != null) throw new HttpException("Такой аккаунт уже существует", HttpStatus.BAD_REQUEST);
         const hashPassword = await bcryptjs.hash(dto.password, 10);
         account = await this.accountsService.createAccount(new CreateAccountDto(dto.email, hashPassword));
-
+        if(isCompany){
+            await this.accountsService.addRoleForCompany(account.id);
+        }
         this.activationLinksService.create(account.id);
 
         const refreshToken = this.tokensService.generateRefreshToken(account);
@@ -49,7 +51,7 @@ export class AuthService {
     }
 
     async registerUser(dto: CreateAccountUserDto, ip){
-        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip, false);
         this.usersService.createUser(new CreateUserDto(dtoAccountTokens.account.id, dto.login));
         let {account, accessToken, refreshToken} = dtoAccountTokens;
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
@@ -60,7 +62,7 @@ export class AuthService {
     }
 
     async registerCompany(dto: CreateAccountCompanyDto, ip, files: any[]){
-        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip, true);
         this.companiesService.create(new CreateCompanyDto(
             dtoAccountTokens.account.id,
             dto.company_name,

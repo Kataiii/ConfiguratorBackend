@@ -1,9 +1,10 @@
 import { Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateFolderProjectsDto } from './dto/create_folder-projects.dto';
 import { FolderProjects } from './folder-projects.model';
 import { FolderProjectsService } from './folder-projects.service';
 
+@ApiTags('Folder-Projects')
 @Controller('folder-projects')
 export class FolderProjectsController {
     constructor(private folderProjectsService: FolderProjectsService){}

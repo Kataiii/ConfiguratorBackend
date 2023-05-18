@@ -6,7 +6,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';
-import { AddRoleDto } from './dto/add-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { BanAccountDto } from './dto/ban-account.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 
@@ -47,7 +47,7 @@ export class AccountsController {
     @Roles('admin', 'company')
     @UseGuards(RolesAuthGuard)
     @Post('/role')
-    addRole(@Body() dto: AddRoleDto){
+    addRole(@Body() dto: UpdateRoleDto){
         return this.accountService.addRole(dto);
     }
 
