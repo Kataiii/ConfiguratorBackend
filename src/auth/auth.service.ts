@@ -14,6 +14,7 @@ import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
 import { ActivationLinksService } from './activation_links/activation_links.service';
 import { TokensService } from './tokens/tokens.service';
 import * as jwt from 'jsonwebtoken';
+import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,8 @@ export class AuthService {
         private usersService: UsersService,
         private companiesService: CompaniesService,
         private activationLinksService: ActivationLinksService,
-        private tokensService: TokensService){}
+        private tokensService: TokensService,
+        private folderProjectsService: FolderProjectsService){}
 
     async login(dto: CreateAccountDto, ip){
         const account = await this.validateAccount(dto);
@@ -50,6 +52,10 @@ export class AuthService {
         let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip);
         this.usersService.createUser(new CreateUserDto(dtoAccountTokens.account.id, dto.login));
         let {account, accessToken, refreshToken} = dtoAccountTokens;
+        await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
+            "Отправленные", 
+            "Архив", 
+            "Корзина"]);
         return {accessToken, refreshToken};
     }
 
@@ -65,6 +71,9 @@ export class AuthService {
             dto.company_type_id
         ), files);
         let {account, accessToken, refreshToken} = dtoAccountTokens;
+        await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
+            "Архив", 
+            "Корзина"]);
         return {accessToken, refreshToken};
     }
 
