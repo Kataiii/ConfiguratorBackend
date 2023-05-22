@@ -34,6 +34,8 @@ import { AccountsProjects } from "./accounts-projects/accounts-ptojects.model";
 import { AccountsProjectsModule } from './accounts-projects/accounts-projects.module';
 import { ProjectStatusesModule } from './projects/project-statuses/project-statuses.module';
 import { ProjectStatuses } from "./projects/project-statuses/project-statuses.model";
+import { ProjectEvaluationsModule } from './projects/project_evaluations/project_evaluations.module';
+import { ProjectEvaluations } from "./projects/project_evaluations/project_evaluations.model";
 
 
 @Module({
@@ -66,7 +68,8 @@ import { ProjectStatuses } from "./projects/project-statuses/project-statuses.mo
                     Token,
                     ActivationLink,
                     AccountsProjects,
-                    ProjectStatuses
+                    ProjectStatuses,
+                    ProjectEvaluations
                 ],
             autoLoadModels: true
           }),
@@ -86,7 +89,8 @@ import { ProjectStatuses } from "./projects/project-statuses/project-statuses.mo
         FilesModule,
         FolderProjectsModule,
         AccountsProjectsModule,
-        ProjectStatusesModule
+        ProjectStatusesModule,
+        ProjectEvaluationsModule
     ]
 })
 export class AppModule{

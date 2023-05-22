@@ -10,12 +10,31 @@ export class FilesService {
         try{
             const fileName = uuid.v4() + expansionFile;
             const filePath = path.resolve(__dirname, '..', 'static', nameFolder);
+            console.log('file ', path.join(filePath, fileName))
             if(!fs.existsSync(filePath)){
                 fs.mkdirSync(filePath, {recursive: true});
             }
+            console.log('file buffer', file.buffer)
             fs.writeFileSync(path.join(filePath, fileName), file.buffer);
             return fileName;
         } catch(e){
+            console.log(e);
+            throw new HttpException('Произошла ошибка при записи файлов', HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    async createCloneFile(file, expansionFile: string, nameFolder: string): Promise<string>{
+        try{
+            const fileName = uuid.v4() + expansionFile;
+            const filePath = path.resolve(__dirname, '..', 'static', nameFolder);
+            console.log('file ', path.join(filePath, fileName))
+            if(!fs.existsSync(filePath)){
+                fs.mkdirSync(filePath, {recursive: true});
+            }
+            fs.writeFileSync(path.join(filePath, fileName), file);
+            return fileName;
+        } catch(e){
+            console.log(e);
             throw new HttpException('Произошла ошибка при записи файлов', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
@@ -41,5 +60,13 @@ export class FilesService {
                 links.push(link);
         }
         return links;
+    }
+
+    async cloneFile(fileName: string, nameFolder: string){
+        const filePath = path.resolve(__dirname, '..', 'static', nameFolder);
+        const project = fs.readFileSync(path.join(filePath, fileName));
+        return await this.createCloneFile(project,
+            fileName.slice(fileName.lastIndexOf('.'), fileName.length), 
+            nameFolder);
     }
 }

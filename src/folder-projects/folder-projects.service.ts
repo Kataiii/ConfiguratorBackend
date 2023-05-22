@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateFolderProjectsDto } from './dto/create_folder-projects.dto';
 import { FolderProjects } from './folder-projects.model';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class FolderProjectsService {
@@ -27,7 +28,18 @@ export class FolderProjectsService {
             return account_id;
         }
         catch(e){
-            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            console.log(e)
+            throw new HttpException("Ошибка при создании папок", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    async getFolderByNameAndAccountId(name: string, account_id: number){
+        return await this.folderProjectsRepository.findOne({where: {name: name, account_id: account_id}});
+    }
+
+    async getFolderByNameAndToken(accessToken, name: string){
+        const accountData = await <jwt.JwtPayload>jwt.verify(accessToken, process.env.PRIVATE_KEY);
+        console.log(accountData);
+        return await this.getFolderByNameAndAccountId(name, accountData.id);
     }
 }

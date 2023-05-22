@@ -15,6 +15,9 @@ import { ProjectsService } from './projects.service';
     FilesModule,
     AccountsProjectsModule,
     AuthModule
+  ],
+  exports:[
+    ProjectsService
   ]
 })
 export class ProjectsModule {}
