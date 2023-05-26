@@ -9,6 +9,13 @@ async function start() {
     const PORT = process.env.PORT || 5000;
     const app = await NestFactory.create(AppModule)
 
+    const  corsOptions = {
+        origin: process.env.CLIENT_URL,
+        methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true
+    }
+
     const config = new DocumentBuilder()
         .setTitle('Конфигуратор')
         .setDescription('Документация REST API')
@@ -21,7 +28,13 @@ async function start() {
     const reflector = app.get(Reflector);
     app.useGlobalGuards(new JwtAuthGuard(reflector));
     app.use(cookieParser());
+    app.enableCors(corsOptions)
     await app.listen(PORT, () => console.log(`Server start on port = ${PORT}`))
 }
 
 start()
+
+// cors({
+//     Credential: true,
+//     origin: process.env.CLIENT_URL,
+// })

@@ -30,7 +30,7 @@ export class AuthService {
         const refreshToken = this.tokensService.generateRefreshToken(account);
         await this.tokensService.saveRefreshToken(refreshToken, account.id, ip);
         const accessToken = await this.generateToken(account)
-        return {refreshToken, accessToken};
+        return {refreshToken, accessToken, account};
     }
 
     private async register(dto: CreateAccountDto, ip, isCompany: boolean){
@@ -58,7 +58,7 @@ export class AuthService {
             "Отправленные", 
             "Архив", 
             "Корзина"]);
-        return {accessToken, refreshToken};
+        return {accessToken, refreshToken, account};
     }
 
     async registerCompany(dto: CreateAccountCompanyDto, ip, files: any[]){
@@ -76,7 +76,7 @@ export class AuthService {
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
             "Архив", 
             "Корзина"]);
-        return {accessToken, refreshToken};
+        return {accessToken, refreshToken, account};
     }
 
     private async generateToken(account: Account){

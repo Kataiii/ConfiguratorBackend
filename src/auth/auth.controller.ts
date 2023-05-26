@@ -64,7 +64,7 @@ export class AuthController {
 
     @ApiOperation({summary: 'Refresh token'})
     @ApiResponse({status: 200, type: Token})
-    @Get('/refresh')
+    @Post('/refresh')
     @Public()
     async refresh(@Req() request: Request, @Ip() ip){
         const refresh = request.cookies;
