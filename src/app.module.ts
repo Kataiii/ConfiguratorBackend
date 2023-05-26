@@ -36,6 +36,8 @@ import { ProjectStatusesModule } from './projects/project-statuses/project-statu
 import { ProjectStatuses } from "./projects/project-statuses/project-statuses.model";
 import { ProjectEvaluationsModule } from './projects/project_evaluations/project_evaluations.module';
 import { ProjectEvaluations } from "./projects/project_evaluations/project_evaluations.model";
+import { CompaniesProjectEvaluationsModule } from './companies-project_evaluations/companies-project_evaluations.module';
+import { CompaniesProjectEvaluations } from "./companies-project_evaluations/companies-project_evaluations.model";
 
 
 @Module({
@@ -69,7 +71,8 @@ import { ProjectEvaluations } from "./projects/project_evaluations/project_evalu
                     ActivationLink,
                     AccountsProjects,
                     ProjectStatuses,
-                    ProjectEvaluations
+                    ProjectEvaluations,
+                    CompaniesProjectEvaluations
                 ],
             autoLoadModels: true
           }),
@@ -90,7 +93,8 @@ import { ProjectEvaluations } from "./projects/project_evaluations/project_evalu
         FolderProjectsModule,
         AccountsProjectsModule,
         ProjectStatusesModule,
-        ProjectEvaluationsModule
+        ProjectEvaluationsModule,
+        CompaniesProjectEvaluationsModule
     ]
 })
 export class AppModule{
