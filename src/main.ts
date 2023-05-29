@@ -33,8 +33,3 @@ async function start() {
 }
 
 start()
-
-// cors({
-//     Credential: true,
-//     origin: process.env.CLIENT_URL,
-// })

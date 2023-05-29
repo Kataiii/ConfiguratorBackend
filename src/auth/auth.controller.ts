@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Ip, Res } from '@nestjs/common';
+import { Controller, Post, Get, Body, Ip, Res, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateAccountCompanyDto } from 'src/accounts/dto/create-account-company.dto';
 import { CreateAccountUserDto } from 'src/accounts/dto/create-account-user.dto';
@@ -34,6 +34,7 @@ export class AuthController {
     @Public()
     @Post('/register/user')
     async registerUser(@Body() dto: CreateAccountUserDto,  @Ip() ip, @Res({ passthrough: true }) response: Response){
+        console.log(dto);
         let tokens = await this.authService.registerUser(dto, ip);
         response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
         return tokens;
@@ -52,14 +53,14 @@ export class AuthController {
     }
 
     @ApiOperation({summary: 'Log out of the system'})
-    @ApiResponse({status: 200, type: Token})
     @Post('/logout')
     @Public()
     async logout(@Req() request: Request, @Res({passthrough: true}) response: Response){
         let refreshToken = request.cookies;
         const token = await this.authService.logout(refreshToken);
         response.clearCookie('refreshToken');
-        return response.redirect(process.env.CLIENT_URL);
+        // return response.redirect(process.env.CLIENT_URL);
+        return HttpStatus.OK;
     }
 
     @ApiOperation({summary: 'Refresh token'})
