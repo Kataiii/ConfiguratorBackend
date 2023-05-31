@@ -15,6 +15,7 @@ import { ActivationLinksService } from './activation_links/activation_links.serv
 import { TokensService } from './tokens/tokens.service';
 import * as jwt from 'jsonwebtoken';
 import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
+import { RecoveryLinksService } from './recovery_links/recovery_links.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
         private usersService: UsersService,
         private companiesService: CompaniesService,
         private activationLinksService: ActivationLinksService,
+        private recoveryLinksService: RecoveryLinksService,
         private tokensService: TokensService,
         private folderProjectsService: FolderProjectsService){}
 
@@ -125,5 +127,13 @@ export class AuthService {
             }
         }
         throw new UnauthorizedException('Неверный пароль или логин');
+    }
+
+    async recoveryPassword(email: string){
+        const account = await this.accountsService.getAccountByEmail(email);
+        if(account != null) {
+            return await this.recoveryLinksService.create(account.id);
+        }
+        throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
     }
 }

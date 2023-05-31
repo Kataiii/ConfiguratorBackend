@@ -11,6 +11,8 @@ import { Req, UploadedFiles, UseInterceptors } from '@nestjs/common/decorators';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import {stringify} from 'flatted';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { Account } from 'src/accounts/account.model';
+import { EmailDto } from './dto/email.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -76,5 +78,14 @@ export class AuthController {
             throw new UnauthorizedException;
         }
         return await this.authService.refresh(refreshToken, ip);
+    }
+
+    @ApiOperation({summary: 'Recovery password, send letter'})
+    @ApiResponse({status: 200, type: Account})
+    @Post('/recovery')
+    @Public()
+    async recoveryPassword(@Body() dto:EmailDto){
+        console.log('email', dto.email);
+        return await this.authService.recoveryPassword(dto.email);
     }
 }

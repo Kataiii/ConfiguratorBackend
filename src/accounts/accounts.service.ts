@@ -54,6 +54,18 @@ export class AccountsService {
         return accountUpdated;
     }
 
+    async fullUpdate(account: Account){
+        const accountUpdated = await this.accountRepository.update({
+            email: account.email,
+            is_checked_email: account.is_checked_email,
+            password: account.password,
+            city_id: account.city_id,
+            is_spam: account.is_spam,
+            profile_picture: account.profile_picture
+        }, {where: {id: account.id}});
+        return accountUpdated;
+    }
+
     async addRole(dto: UpdateRoleDto) {
         const account = await this.getAccountById(dto.account_id);
         const role = await this.rolesService.getRoleByName(dto.value);
