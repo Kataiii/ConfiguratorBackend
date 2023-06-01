@@ -49,6 +49,7 @@ export class AuthController {
     @Public()
     @Post('register/company')
     async registerCompany(@Body() dto: CreateAccountCompanyDto,  @Ip() ip, @Res({ passthrough: true }) response: Response, @UploadedFiles() files){
+        console.log(files);
         let tokens = await this.authService.registerCompany(dto, ip, files);
         response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
         return tokens;

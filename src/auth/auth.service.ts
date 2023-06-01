@@ -73,7 +73,8 @@ export class AuthService {
             dto.name,
             dto.patronymic,
             dto.phone_number,
-            dto.company_type_id
+            dto.company_type_id,
+            dto.is_spam
         ), files);
         let {account, accessToken, refreshToken} = dtoAccountTokens;
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
