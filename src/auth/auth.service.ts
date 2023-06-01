@@ -15,6 +15,7 @@ import { ActivationLinksService } from './activation_links/activation_links.serv
 import { TokensService } from './tokens/tokens.service';
 import * as jwt from 'jsonwebtoken';
 import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
+import { RecoveryLinksService } from './recovery_links/recovery_links.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
         private usersService: UsersService,
         private companiesService: CompaniesService,
         private activationLinksService: ActivationLinksService,
+        private recoveryLinksService: RecoveryLinksService,
         private tokensService: TokensService,
         private folderProjectsService: FolderProjectsService){}
 
@@ -37,7 +39,7 @@ export class AuthService {
         let account = await this.accountsService.getAccountByEmail(dto.email);
         if(account != null) throw new HttpException("Такой аккаунт уже существует", HttpStatus.BAD_REQUEST);
         const hashPassword = await bcryptjs.hash(dto.password, 10);
-        account = await this.accountsService.createAccount(new CreateAccountDto(dto.email, hashPassword));
+        account = await this.accountsService.createAccount(new CreateAccountDto(dto.email, hashPassword, dto.is_spam));
         if(isCompany){
             await this.accountsService.addRoleForCompany(account.id);
         }
@@ -51,7 +53,7 @@ export class AuthService {
     }
 
     async registerUser(dto: CreateAccountUserDto, ip){
-        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip, false);
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password, dto.is_spam), ip, false);
         this.usersService.createUser(new CreateUserDto(dtoAccountTokens.account.id, dto.login));
         let {account, accessToken, refreshToken} = dtoAccountTokens;
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
@@ -62,7 +64,8 @@ export class AuthService {
     }
 
     async registerCompany(dto: CreateAccountCompanyDto, ip, files: any[]){
-        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password), ip, true);
+        //TODO добавить is_spam
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password, false), ip, true);
         this.companiesService.create(new CreateCompanyDto(
             dtoAccountTokens.account.id,
             dto.company_name,
@@ -70,7 +73,8 @@ export class AuthService {
             dto.name,
             dto.patronymic,
             dto.phone_number,
-            dto.company_type_id
+            dto.company_type_id,
+            dto.is_spam
         ), files);
         let {account, accessToken, refreshToken} = dtoAccountTokens;
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
@@ -117,11 +121,20 @@ export class AuthService {
 
     private async validateAccount(dto: CreateAccountDto){
         const account = await this.accountsService.getAccountByEmail(dto.email);
-        const passwordEqual = await bcryptjs.compare(dto.password, account.password);
-        if(account && passwordEqual){
-            return account;
+        if(account != null){
+            const passwordEqual = await bcryptjs.compare(dto.password, account.password);
+            if(account && passwordEqual){
+                return account;
+            }
         }
-
         throw new UnauthorizedException('Неверный пароль или логин');
+    }
+
+    async recoveryPassword(email: string){
+        const account = await this.accountsService.getAccountByEmail(email);
+        if(account != null) {
+            return await this.recoveryLinksService.create(account.id);
+        }
+        throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
     }
 }

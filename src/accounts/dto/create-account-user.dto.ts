@@ -9,4 +9,7 @@ export class CreateAccountUserDto{
 
     @ApiProperty({example: 'user', description: 'Логин пользователя', required: true})
     readonly login: string;
+
+    @ApiProperty({example: true, description: 'Соглашение на пользовательскую рассылку', required: false})
+    readonly is_spam: boolean;
 }

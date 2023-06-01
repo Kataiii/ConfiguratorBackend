@@ -30,4 +30,7 @@ export class CreateAccountCompanyDto{
 
     @ApiProperty({example: 'official_letter.png', description: 'Строка загрузки файла с письмом компании', required: true})
     official_letter: string;
+
+    @ApiProperty({example: true, description: 'Подписка на новостную рассылку', required: true})
+    is_spam: boolean;
 }

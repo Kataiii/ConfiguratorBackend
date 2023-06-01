@@ -22,7 +22,10 @@ export class CreateCompanyDto{
     @ApiProperty({example: 1, description: 'Id типа компании', required: true})
     company_type_id: number;
 
-    constructor(id, company_name, surname, name, patronymic, phone_number, company_type_id){
+    @ApiProperty({example: true, description: 'Подписка на новостую рассылку', required: false})
+    is_spam: boolean;
+
+    constructor(id, company_name, surname, name, patronymic, phone_number, company_type_id, is_spam){
         this.id = id;
         this.company_name = company_name;
         this.surname = surname;
@@ -30,5 +33,6 @@ export class CreateCompanyDto{
         if(patronymic != null || patronymic != undefined) this.patronymic = patronymic;
         this.phone_number = phone_number;
         this.company_type_id = company_type_id;
+        this.is_spam = is_spam;
     }
 }

@@ -8,6 +8,7 @@ import { ActivationLinksModule } from './activation_links/activation_links.modul
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { MailServiceModule } from './mail-service/mail-service.module';
+import { RecoveryLinksModule } from './recovery_links/recovery_links.module';
 import { TokensModule } from './tokens/tokens.module';
 
 @Module({
@@ -19,7 +20,8 @@ import { TokensModule } from './tokens/tokens.module';
     CompaniesModule,
     ActivationLinksModule,
     TokensModule,
-    FolderProjectsModule
+    FolderProjectsModule,
+    RecoveryLinksModule
   ],
   exports: [
     AuthService

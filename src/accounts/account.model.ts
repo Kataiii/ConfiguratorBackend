@@ -9,6 +9,7 @@ import { AccountsProjects } from "src/accounts-projects/accounts-ptojects.model"
 interface AccountCreationAttrs{
     email: string;
     password: string;
+    is_spam: boolean;
 }
 
 @Table({tableName: 'accounts'})
@@ -34,8 +35,8 @@ export class Account extends Model<Account, AccountCreationAttrs>{
     @Column({type: DataType.INTEGER})
     city_id: number;
 
-    @ApiProperty({example: false, description: 'Получение на почту уведомлений', required: false})
-    @Column({type: DataType.BOOLEAN, defaultValue: false})
+    @ApiProperty({example: false, description: 'Получение на почту уведомлений', required: true})
+    @Column({type: DataType.BOOLEAN, allowNull: false})
     is_spam: boolean;
 
     @BelongsToMany(() => Role, () => AccountRoles)

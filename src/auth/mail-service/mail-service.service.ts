@@ -43,4 +43,28 @@ export class MailServiceService {
             }
         });
     }
+
+    async sendRecoveryPassword(to: string, link: string){
+        let mailOptions = {
+            from: process.env.SMTP_USER, 
+            to: to, 
+            subject: 'Сброс пароля на сайте ', 
+            html: 
+            `
+                <div>
+                    <h1>Для сброса пароля перейдите по ссылке</h1>
+                    <a href="${link}">${link}</a>
+                </div>
+            `
+        };
+        
+        this.transporter.sendMail(mailOptions, function (error, success) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log("Server is ready to take our messages about recovery");
+            }
+        });
+    }
 }

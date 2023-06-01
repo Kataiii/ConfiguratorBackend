@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/guards/decorators/public.decorator';
 import { CompanyType } from './company_types.model';
 import { CompanyTypesService } from './company_types.service';
 import { CreateCompanyTypesDto } from './dto/create_company_type.dto';
@@ -19,6 +20,7 @@ export class CompanyTypesController {
     @ApiOperation({summary: 'Get all company types'})
     @ApiResponse({ status: 200, type: [CompanyType]})
     @Get()
+    @Public()
     getAll(){
         return this.companyTypesService.getAll();
     }
