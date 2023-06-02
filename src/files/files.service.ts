@@ -51,9 +51,11 @@ export class FilesService {
             'projects');
     }
 
-    async createCompanyFiles(files: any[], company_name: string): Promise<string[]>{
+    async createCompanyFiles(filesObj, company_name: string): Promise<string[]>{
         let links = [];
+        let files = [filesObj.letter[0], filesObj.inn[0]];
         for(let i = 0; i < files.length; i++){
+            console.log('file i ', files[i]);
             let link = await this.createFile(files[i],
                 files[i].originalname.slice(files[i].originalname.lastIndexOf('.'), files[i].originalname.length), 
                 company_name);
