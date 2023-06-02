@@ -65,8 +65,4 @@ export class Company extends Model<Company, CompanyCreationAttrs>{
     @ApiProperty({example: 'Что-то написано', description: 'Информация о компании', required: false})
     @Column({type: DataType.TEXT, unique: false, allowNull: true})
     about_company: string;
-
-    @ApiProperty({example: true, description: 'Подписка на рассылку', required: false})
-    @Column({type: DataType.BOOLEAN, unique: false, allowNull: true})
-    is_spam: boolean;
 }

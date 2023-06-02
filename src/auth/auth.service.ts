@@ -64,17 +64,15 @@ export class AuthService {
     }
 
     async registerCompany(dto: CreateAccountCompanyDto, ip, files: any[]){
-        //TODO добавить is_spam
-        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password, false), ip, true);
-        this.companiesService.create(new CreateCompanyDto(
+        let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password, dto.is_spam), ip, true);
+        await this.companiesService.create(new CreateCompanyDto(
             dtoAccountTokens.account.id,
             dto.company_name,
             dto.surname,
             dto.name,
             dto.patronymic,
             dto.phone_number,
-            dto.company_type_id,
-            dto.is_spam
+            dto.company_type_id
         ), files);
         let {account, accessToken, refreshToken} = dtoAccountTokens;
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
