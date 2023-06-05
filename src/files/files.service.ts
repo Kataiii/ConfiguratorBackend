@@ -9,7 +9,7 @@ export class FilesService {
     async createFile(file, expansionFile: string, nameFolder: string): Promise<string>{
         try{
             const fileName = uuid.v4() + expansionFile;
-            const filePath = path.resolve(__dirname, '..', 'static', nameFolder);
+            const filePath = path.resolve(__dirname, '..', '..', 'static', nameFolder);
             console.log('file ', path.join(filePath, fileName))
             if(!fs.existsSync(filePath)){
                 fs.mkdirSync(filePath, {recursive: true});
@@ -26,7 +26,7 @@ export class FilesService {
     async createCloneFile(file, expansionFile: string, nameFolder: string): Promise<string>{
         try{
             const fileName = uuid.v4() + expansionFile;
-            const filePath = path.resolve(__dirname, '..', 'static', nameFolder);
+            const filePath = path.resolve(__dirname,'..', '..', 'static', nameFolder);
             console.log('file ', path.join(filePath, fileName))
             if(!fs.existsSync(filePath)){
                 fs.mkdirSync(filePath, {recursive: true});
@@ -65,7 +65,7 @@ export class FilesService {
     }
 
     async cloneFile(fileName: string, nameFolder: string){
-        const filePath = path.resolve(__dirname, '..', 'static', nameFolder);
+        const filePath = path.resolve(__dirname, '..', '..', 'static', nameFolder);
         const project = fs.readFileSync(path.join(filePath, fileName));
         return await this.createCloneFile(project,
             fileName.slice(fileName.lastIndexOf('.'), fileName.length), 
