@@ -3,6 +3,7 @@ import { forwardRef } from '@nestjs/common/utils';
 import { AccountsModule } from 'src/accounts/accounts.module';
 import { CompaniesModule } from 'src/companies/companies.module';
 import { FolderProjectsModule } from 'src/folder-projects/folder-projects.module';
+import { RolesModule } from 'src/roles/roles.module';
 import { UsersModule } from 'src/users/users.module';
 import { ActivationLinksModule } from './activation_links/activation_links.module';
 import { AuthController } from './auth.controller';
@@ -21,7 +22,8 @@ import { TokensModule } from './tokens/tokens.module';
     ActivationLinksModule,
     TokensModule,
     FolderProjectsModule,
-    RecoveryLinksModule
+    RecoveryLinksModule,
+    RolesModule
   ],
   exports: [
     AuthService

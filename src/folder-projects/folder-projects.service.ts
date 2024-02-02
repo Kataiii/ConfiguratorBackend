@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateFolderProjectsDto } from './dto/create_folder-projects.dto';
 import { FolderProjects } from './folder-projects.model';
 import * as jwt from 'jsonwebtoken';
+import { UpdateFolderProjectsDto } from './dto/update_folder-projects.dto';
 
 @Injectable()
 export class FolderProjectsService {
@@ -10,6 +11,14 @@ export class FolderProjectsService {
 
     async create(dto: CreateFolderProjectsDto){
         return await this.folderProjectsRepository.create(dto);
+    }
+
+    async update(dto: UpdateFolderProjectsDto){
+        return await this.folderProjectsRepository.update(dto, {where: {id: dto.id}});
+    }
+
+    async delete(id: number){
+        return await this.folderProjectsRepository.destroy({where: {id: id}});
     }
 
     async getAll(){
@@ -20,10 +29,10 @@ export class FolderProjectsService {
         return await this.folderProjectsRepository.findAll({where: {account_id: id}});
     }
 
-    async createDefaultFolders(account_id: number, names_folders: string[]){
+    async createDefaultFolders(account_id: number, names_folders: string[], role_id: number){
         try{
             for(let i = 0; i < names_folders.length; i++){
-                await this.create({name: names_folders[i], account_id: account_id});
+                await this.create({name: names_folders[i], account_id: account_id, role_id});
             }
             return account_id;
         }
@@ -41,5 +50,14 @@ export class FolderProjectsService {
         const accountData = await <jwt.JwtPayload>jwt.verify(accessToken, process.env.PRIVATE_KEY);
         console.log(accountData);
         return await this.getFolderByNameAndAccountId(name, accountData.id);
+    }
+
+    async getFoldersByAccountRole(accessToken: string, role_id: number){
+        const accountData = await <jwt.JwtPayload>jwt.verify(accessToken, process.env.PRIVATE_KEY);
+        const folders = await this.folderProjectsRepository.findAll({where: {account_id: accountData.id, role_id: role_id}});
+        if(folders.length == 0){
+            throw new HttpException("Папок не существует", HttpStatus.NOT_FOUND);
+        }
+        return folders;
     }
 }

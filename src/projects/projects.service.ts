@@ -20,7 +20,7 @@ export class ProjectsService {
         const saveFileName = await this.filesService.createProjectFile(files[1]);
         const project = await this.createProjectBd({...dto, preview: previewFileName, save_file: saveFileName});
         const accountData = await <jwt.JwtPayload>this.authService.validateAccessToken(accessToken);
-        await this.accountsProjectsService.create({account_id: accountData.id, project_id: project.id})
+        await this.accountsProjectsService.create({account_id: accountData.id, project_id: project.id, role_id: dto.role_id})
         return project;
     }
 

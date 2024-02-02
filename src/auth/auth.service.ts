@@ -16,6 +16,7 @@ import { TokensService } from './tokens/tokens.service';
 import * as jwt from 'jsonwebtoken';
 import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
 import { RecoveryLinksService } from './recovery_links/recovery_links.service';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,8 @@ export class AuthService {
         private activationLinksService: ActivationLinksService,
         private recoveryLinksService: RecoveryLinksService,
         private tokensService: TokensService,
-        private folderProjectsService: FolderProjectsService){}
+        private folderProjectsService: FolderProjectsService,
+        private rolesService: RolesService){}
 
     async login(dto: CreateAccountDto, ip){
         const account = await this.validateAccount(dto);
@@ -56,10 +58,11 @@ export class AuthService {
         let dtoAccountTokens = await this.register(new CreateAccountDto(dto.email, dto.password, dto.is_spam), ip, false);
         this.usersService.createUser(new CreateUserDto(dtoAccountTokens.account.id, dto.login));
         let {account, accessToken, refreshToken} = dtoAccountTokens;
+        const role = await this.rolesService.getRoleByName('user');
         await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
             "Отправленные", 
             "Архив", 
-            "Корзина"]);
+            "Корзина"], role.id);
         return {accessToken, refreshToken, account};
     }
 
@@ -75,9 +78,14 @@ export class AuthService {
             dto.company_type_id
         ), files);
         let {account, accessToken, refreshToken} = dtoAccountTokens;
-        await this.folderProjectsService.createDefaultFolders(account.id, ["Неотсортированные", 
-            "Архив", 
-            "Корзина"]);
+        const role = await this.rolesService.getRoleByName('company');
+        await this.folderProjectsService.createDefaultFolders(account.id, 
+            [
+                "Неотсортированные", 
+                "Архив", 
+                "Корзина",
+                "На просчете"
+            ], role.id);
         return {accessToken, refreshToken, account};
     }
 

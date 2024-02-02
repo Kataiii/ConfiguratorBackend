@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Account } from "src/accounts/account.model";
+import { Role } from "src/roles/roles.model";
 
 interface FolderProjectsCreateAttrs{
     name: string;
@@ -21,4 +22,9 @@ export class FolderProjects extends Model<FolderProjects, FolderProjectsCreateAt
     @Column({type: DataType.INTEGER, unique: false, allowNull: false})
     @ForeignKey(() => Account)
     account_id: number;
+
+    @ApiProperty({example: 1, description: 'Id роли аккаунта', required: true})
+    @Column({type: DataType.INTEGER, unique: false, allowNull: false})
+    @ForeignKey(() => Role)
+    role_id: number;
 }

@@ -12,4 +12,7 @@ export class CreateProjectDto{
 
     @ApiProperty({example: 1, description: 'Id папки', required: true})
     folder_id: number;
+
+    @ApiProperty({example: 1, description: 'Id роли', required: true})
+    role_id:number;
 }

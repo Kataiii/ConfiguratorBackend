@@ -11,8 +11,7 @@ async function start() {
 
     const  corsOptions = {
         origin: process.env.CLIENT_URL,
-        methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'PATCH', 'DELETE'],
         credentials: true
     }
 

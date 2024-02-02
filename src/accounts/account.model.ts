@@ -44,5 +44,6 @@ export class Account extends Model<Account, AccountCreationAttrs>{
 
     @ApiProperty({example: 'image.png', description: 'Строка загрузки картинки', required: false})
     @Column({type: DataType.STRING, allowNull: true})
-    profile_picture: string; //Хранение картинок
+    profile_picture: string;
 }
+

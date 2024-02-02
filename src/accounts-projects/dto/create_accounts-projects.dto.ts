@@ -6,4 +6,7 @@ export class CreateAccountsProjectsDto{
 
     @ApiProperty({example: 1, description: 'Id проекта', required: true})
     readonly project_id: number;
+
+    @ApiProperty({example: 1, description: 'Id роли', required: true})
+    readonly role_id: number;
 }
