@@ -23,7 +23,6 @@ export class FolderProjectsController {
     @ApiResponse({ status: 200, type: FolderProjects})
     @Patch()
     async update(@Body() dto: UpdateFolderProjectsDto){
-        console.log(dto);
         return await this.folderProjectsService.update(dto);
     }
 
@@ -31,7 +30,6 @@ export class FolderProjectsController {
     @ApiResponse({status: 200})
     @Delete()
     async delete(@Body() dto: DeletFolderProjectsDto){
-        console.log(dto);
         return await this.folderProjectsService.delete(dto.id);
     }
 

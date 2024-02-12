@@ -9,7 +9,7 @@ interface CreateAccountsProjectsAttrs{
     role_id: number;
 }
 
-@Table({tableName: 'accounts_projects', createdAt: false, updatedAt: false})
+@Table({tableName: 'accounts_projects', updatedAt: false})
 export class AccountsProjects extends Model<AccountsProjects, CreateAccountsProjectsAttrs>{
     @ForeignKey(() => Account)
     @Column({type: DataType.INTEGER, unique: false, primaryKey: true, allowNull: true})
