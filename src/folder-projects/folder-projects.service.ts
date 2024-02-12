@@ -60,4 +60,12 @@ export class FolderProjectsService {
         }
         return folders;
     }
+
+    async getFolderById(id: number){
+        const folder = await this.folderProjectsRepository.findOne({where: {id: id}});
+        if(folder == null){
+            throw new HttpException("Folder not found", HttpStatus.NOT_FOUND);
+        }
+        return folder;
+    }
 }

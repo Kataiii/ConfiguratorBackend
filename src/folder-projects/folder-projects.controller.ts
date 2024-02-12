@@ -37,7 +37,7 @@ export class FolderProjectsController {
 
     @ApiOperation({summary: 'Get folders by account id'})
     @ApiResponse({ status: 200, type: [FolderProjects]})
-    @Get('/:id')
+    @Get('account/:id')
     async getFoldersByAccountId(@Param('id') id : number){
         return await this.folderProjectsService.getByAccountId(id);
     }
@@ -50,5 +50,13 @@ export class FolderProjectsController {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         const accessToken = type === 'Bearer' ? token : undefined;
         return await this.folderProjectsService.getFoldersByAccountRole(accessToken, role);
+    }
+
+    @ApiOperation({summary: 'Get folder by id'})
+    @ApiResponse({status: 200, type: FolderProjects})
+    @ApiResponse({status: 404, description: 'Folder not found'})
+    @Get('/:id')
+    async getFolderById(@Param('id') id:number){
+        return await this.folderProjectsService.getFolderById(id);
     }
 }
