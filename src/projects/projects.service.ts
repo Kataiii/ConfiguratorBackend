@@ -51,9 +51,8 @@ export class ProjectsService {
         return await this.projectsRepository.findOne({where: {id: id}});
     }
 
-    //TODO проверить работоспособность
     async getProgectByAccountAndRoleIdPagination(role_id: number, page: number, limit: number, accessToken: string | undefined){
-        const accountData = this.checkAccountData(accessToken);
+        const accountData = await this.checkAccountData(accessToken);
         const account_projects: AccountsProjects[] = await this.accountsProjectsService.getProjectsByAccountAndRoleIdPagination(accountData.id, role_id, page, limit);
 
         if(account_projects.length == 0){
@@ -93,5 +92,18 @@ export class ProjectsService {
 
     async delete(id: number){
         return await this.projectsRepository.destroy({where: {id: id}});
+    }
+
+    async countAllProjects(accessToken: string | undefined, role_id: number): Promise<number>{
+        const accountData = await this.checkAccountData(accessToken); 
+        return await this.accountsProjectsService.countAllProjectByAccountAndRole(accountData.id, role_id);
+    }
+
+    async countAllProjectsInFolder(folder_id: number): Promise<number>{
+        return (await this.projectsRepository.findAndCountAll({
+            where: {
+                folder_id: folder_id
+            }
+        })).count;
     }
 }

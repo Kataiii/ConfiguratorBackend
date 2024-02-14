@@ -26,8 +26,16 @@ export class AccountsProjectsService {
                 ['createdAt', 'DESC']
             ],
             limit: limit,
-            //Page???
             offset: (page - 1) * limit
         })
+    }
+
+    async countAllProjectByAccountAndRole(account_id: number,role_id: number){
+        return (await this.accountsProjectsRepository.findAndCountAll({
+            where: {
+                account_id: account_id,
+                role_id: role_id
+            }
+        })).count;
     }
 }

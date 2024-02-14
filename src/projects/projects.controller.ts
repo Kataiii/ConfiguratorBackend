@@ -40,7 +40,6 @@ export class ProjectsController {
         return await this.projectsService.getProjectsByFolderId(id);
     }
 
-    //TODO проверить работоспособность
     @ApiOperation({summary: 'Get projects by account id and role id, pagination'})
     @ApiResponse({status: 200, type: Project})
     @ApiResponse({status: 404, description: 'Projects not found'})
@@ -72,5 +71,21 @@ export class ProjectsController {
     @Delete()
     async delete(@Body() dto: DeleteProjectsDto){
         return await this.projectsService.delete(dto.id);
+    }
+
+    @ApiOperation({summary: 'Count all projects by role id and account id'})
+    @ApiResponse({status: 200, type: Number})
+    @Get('count/:id')
+    async countAllProjects(@Param('id') role_id, @Req() request: Request){
+        const [type, token] = request.headers.authorization.split(' ');
+        const accessToken = type === 'Bearer' ? token : undefined;
+        return await this.projectsService.countAllProjects(accessToken, role_id);
+    }
+
+    @ApiOperation({summary: 'Count all projects in folder'})
+    @ApiResponse({status: 200, type: Number})
+    @Get('/count/folder/:id')
+    async countAllProjectsInFolder(@Param('id') folder_id: number){
+        return await this.countAllProjectsInFolder(folder_id);
     }
 }
