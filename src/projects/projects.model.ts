@@ -22,7 +22,7 @@ export class Project extends Model<Project, ProjectCreateAttrs>{
 
     @ApiProperty({example: 'image.png', description: 'Путь к файлу картинки', required: false})
     @Column({type: DataType.STRING, unique: false, allowNull: true})
-    preview: string;
+    preview?: string;
 
     @ApiProperty({example: 1, description: 'Id типа строения', required: false})
     @Column({type: DataType.INTEGER, unique: false, allowNull: false})
@@ -34,7 +34,7 @@ export class Project extends Model<Project, ProjectCreateAttrs>{
     
     @ApiProperty({example: 'save.какое-то расширение', description: 'Путь к расположению файла', required: false})
     @Column({type: DataType.STRING, unique: false, allowNull: true})
-    save_file: string;
+    save_file?: string;
 
     @ApiProperty({example: 1, description: 'Id папки', required: false})
     @Column({type: DataType.INTEGER, unique: false, allowNull: false})

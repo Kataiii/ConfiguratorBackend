@@ -14,8 +14,8 @@ export class CreateProjectNameDto{
     folder_id: number;
 
     @ApiProperty({example: 'save.какое-то расширение', description: 'Путь к расположению файла', required: false})
-    save_file: string;
+    save_file?: string;
 
     @ApiProperty({example: 'image.png', description: 'Путь к файлу картинки', required: false})
-    preview: string;
+    preview?: string;
 }

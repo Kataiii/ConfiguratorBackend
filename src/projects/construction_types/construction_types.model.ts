@@ -5,7 +5,7 @@ interface ConstructionTypeCreateAttrs{
     name: string;
 }
 
-@Table({tableName: 'construction_types'})
+@Table({tableName: 'construction_types', updatedAt: false, createdAt: false})
 export class ConstructionType extends Model<ConstructionType, ConstructionTypeCreateAttrs>{
     @ApiProperty({example: 1, description: 'Уникальный идентификатор', required: false})
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})

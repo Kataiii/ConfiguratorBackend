@@ -24,9 +24,14 @@ export class ProjectsService {
     async create(dto: CreateProjectDto, files: any[], accessToken: string | undefined){
         const previewFileName = await this.filesService.createImageFile(files[0]);
         const saveFileName = await this.filesService.createProjectFile(files[1]);
+        return await this.createWithoutFiles(dto, previewFileName, saveFileName, accessToken);
+    }
+
+    async createWithoutFiles(dto: CreateProjectDto, previewFileName: string | undefined, saveFileName: string | undefined, accessToken: string | undefined){
         const project = await this.createProjectBd({...dto, preview: previewFileName, save_file: saveFileName});
-        const accountData = this.checkAccountData(accessToken);
-        await this.accountsProjectsService.create({account_id: accountData.id, project_id: project.id, role_id: dto.role_id})
+        const accountData = await this.checkAccountData(accessToken);
+        const dto_account_project = {account_id: accountData.id, project_id: project.id, role_id: dto.role_id};
+        await this.accountsProjectsService.create(dto_account_project);
         return project;
     }
 

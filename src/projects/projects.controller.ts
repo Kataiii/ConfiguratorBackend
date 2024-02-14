@@ -14,7 +14,7 @@ export class ProjectsController {
     constructor(private projectsService: ProjectsService){}
 
     @ApiOperation({summary: 'Create project'})
-    @ApiResponse({ status: 200, type: Project})
+    @ApiResponse({ status: 201, type: Project})
     @Post()
     @UseInterceptors(FilesInterceptor('files'))
     async create(@Body() dto: CreateProjectDto,
@@ -22,6 +22,15 @@ export class ProjectsController {
             const [type, token] = request.headers.authorization?.split(' ') ?? [];
             const accessToken = type === 'Bearer' ? token : undefined;
             return await this.projectsService.create(dto, files, accessToken);
+    }
+
+    @ApiOperation({summary: 'Create project without files'})
+    @ApiResponse({status: 201, type: Project})
+    @Post('/project')
+    async createWithoutFiles(@Body() dto: CreateProjectDto, @Req() request: Request){
+        const [type, token] = request.headers.authorization?.split(' ') ?? [];
+        const accessToken = type === 'Bearer' ? token : undefined;
+        return await this.projectsService.createWithoutFiles(dto, undefined, undefined, accessToken);
     }
 
     @ApiOperation({summary: 'Get all projects in folder'})
