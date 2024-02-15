@@ -50,7 +50,6 @@ export class ProjectsController {
         return await this.projectsService.getProgectByAccountAndRoleIdPagination(role_id, page, limit, accessToken);
     }
 
-    //TODO проверить работоспособность
     @ApiOperation({summary: 'Get projects by folder id, pagination'})
     @ApiResponse({status: 200, type: Project})
     @ApiResponse({status: 404, description: 'Projects not found'})
@@ -76,7 +75,7 @@ export class ProjectsController {
     @ApiOperation({summary: 'Count all projects by role id and account id'})
     @ApiResponse({status: 200, type: Number})
     @Get('count/:id')
-    async countAllProjects(@Param('id') role_id, @Req() request: Request){
+    async countAllProjects(@Param('id') role_id: number, @Req() request: Request){
         const [type, token] = request.headers.authorization.split(' ');
         const accessToken = type === 'Bearer' ? token : undefined;
         return await this.projectsService.countAllProjects(accessToken, role_id);
@@ -86,6 +85,15 @@ export class ProjectsController {
     @ApiResponse({status: 200, type: Number})
     @Get('/count/folder/:id')
     async countAllProjectsInFolder(@Param('id') folder_id: number){
-        return await this.countAllProjectsInFolder(folder_id);
+        return await this.projectsService.countAllProjectsInFolder(folder_id);
+    }
+
+    @ApiOperation({summary: 'Add project in basket'})
+    @ApiResponse({status: 200, type: Project})
+    @Post('/add_in_basket')
+    async addProjectInBasket(@Body() project: Project, @Req() request: Request){
+        const [type, token] = request.headers.authorization.split(' ');
+        const accessToken = type === 'Bearer' ? token : undefined;
+        return await this.projectsService.addProjectInBasket(project, accessToken);
     }
 }

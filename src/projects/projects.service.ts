@@ -9,15 +9,19 @@ import { AccountsProjectsService } from 'src/accounts-projects/accounts-projects
 import { CreateProjectNameDto } from './dto/create-project-name.dto';
 import { AccountsProjects } from 'src/accounts-projects/accounts-ptojects.model';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { LastFolderProjectsService } from 'src/last_folder-projects/last_folder-projects.service';
+import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
 
 @Injectable()
 export class ProjectsService {
     constructor(@InjectModel(Project) private projectsRepository: typeof Project,
         private filesService: FilesService,
         private authService: AuthService,
-        private accountsProjectsService: AccountsProjectsService){}
+        private accountsProjectsService: AccountsProjectsService,
+        private lastFolderProjectsService: LastFolderProjectsService,
+        private folderProjectService: FolderProjectsService){}
 
-    private checkAccountData(accessToken: string | undefined){
+    private async checkAccountData(accessToken: string | undefined){
         return <jwt.JwtPayload>this.authService.validateAccessToken(accessToken);
     }
     
@@ -67,7 +71,6 @@ export class ProjectsService {
         return projects;
     }
 
-    //TODO проверить работоспособность
     async getProjectsByFolderIdPagination(folder_id: number, page: number, limit: number){
         const projects = await this.projectsRepository.findAll({
             where: {
@@ -105,5 +108,13 @@ export class ProjectsService {
                 folder_id: folder_id
             }
         })).count;
+    }
+
+    async addProjectInBasket(project: Project, accessToken: string | undefined){
+        const accountData = await this.checkAccountData(accessToken);
+        await this.lastFolderProjectsService.create({project_id: project.id, last_folder_id: project.folder_id});
+        const backet = await this.folderProjectService.getFolderByNameAndAccountId("Корзина", accountData.id);
+        project.folder_id = backet.id;
+        return await this.update(project);
     }
 }

@@ -3,6 +3,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AccountsProjectsModule } from 'src/accounts-projects/accounts-projects.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { FilesModule } from 'src/files/files.module';
+import { FolderProjectsModule } from 'src/folder-projects/folder-projects.module';
+import { LastFolderProjectsModule } from 'src/last_folder-projects/last_folder-projects.module';
 import { ProjectsController } from './projects.controller';
 import { Project } from './projects.model';
 import { ProjectsService } from './projects.service';
@@ -14,7 +16,9 @@ import { ProjectsService } from './projects.service';
     SequelizeModule.forFeature([Project]),
     FilesModule,
     AccountsProjectsModule,
-    AuthModule
+    AuthModule,
+    LastFolderProjectsModule,
+    FolderProjectsModule
   ],
   exports:[
     ProjectsService

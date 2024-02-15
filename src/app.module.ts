@@ -29,7 +29,6 @@ import { MailServiceModule } from './auth/mail-service/mail-service.module';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { FolderProjectsModule } from './folder-projects/folder-projects.module';
-import * as path from "path";
 import { AccountsProjects } from "./accounts-projects/accounts-ptojects.model";
 import { AccountsProjectsModule } from './accounts-projects/accounts-projects.module';
 import { ProjectStatusesModule } from './projects/project-statuses/project-statuses.module';
@@ -40,6 +39,8 @@ import { CompaniesProjectEvaluationsModule } from './companies-project_evaluatio
 import { CompaniesProjectEvaluations } from "./companies-project_evaluations/companies-project_evaluations.model";
 import { RecoveryLinksModule } from "./auth/recovery_links/recovery_links.module";
 import { join } from "path";
+import { LastFolderProjectsModule } from './last_folder-projects/last_folder-projects.module';
+import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.model";
 
 
 
@@ -51,7 +52,6 @@ import { join } from "path";
             envFilePath: `.${process.env.NODE_ENV}.env`
         }),
         ServeStaticModule.forRoot({
-            // rootPath: path.resolve(__dirname, 'static'),
             rootPath: join(__dirname, '..', 'static'),
             exclude: ['/(.*)']
         }),
@@ -77,7 +77,8 @@ import { join } from "path";
                     AccountsProjects,
                     ProjectStatuses,
                     ProjectEvaluations,
-                    CompaniesProjectEvaluations
+                    CompaniesProjectEvaluations,
+                    LastFolderProjects
                 ],
             autoLoadModels: true
           }),
@@ -100,7 +101,8 @@ import { join } from "path";
         ProjectStatusesModule,
         ProjectEvaluationsModule,
         CompaniesProjectEvaluationsModule,
-        RecoveryLinksModule
+        RecoveryLinksModule,
+        LastFolderProjectsModule
     ]
 })
 export class AppModule{
