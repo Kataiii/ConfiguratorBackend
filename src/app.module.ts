@@ -38,7 +38,7 @@ import { ProjectEvaluations } from "./projects/project_evaluations/project_evalu
 import { CompaniesProjectEvaluationsModule } from './companies-project_evaluations/companies-project_evaluations.module';
 import { CompaniesProjectEvaluations } from "./companies-project_evaluations/companies-project_evaluations.model";
 import { RecoveryLinksModule } from "./auth/recovery_links/recovery_links.module";
-import { join } from "path";
+import * as path from "path";
 import { LastFolderProjectsModule } from './last_folder-projects/last_folder-projects.module';
 import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.model";
 
@@ -52,7 +52,7 @@ import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.
             envFilePath: `.${process.env.NODE_ENV}.env`
         }),
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '..', 'static'),
+            rootPath: path.resolve(__dirname, '..', 'static'),
             exclude: ['/(.*)']
         }),
         SequelizeModule.forRoot({

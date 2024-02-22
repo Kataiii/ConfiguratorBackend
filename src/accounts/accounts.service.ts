@@ -25,7 +25,7 @@ export class AccountsService {
         const role = await this.rolesService.getRoleByName('user');
         await account.$set('roles', [role.id]);
         account.roles = [role];
-        return account;
+        return await this.accountRepository.findOne({where: {email: dto.email}, include: {all: true}});
     }
 
     async getAllAccounts(){

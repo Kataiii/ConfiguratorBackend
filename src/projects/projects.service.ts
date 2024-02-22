@@ -82,7 +82,10 @@ export class ProjectsService {
             limit: limit,
             offset: (page - 1)*limit
         });
-
+        console.log('++++++++++++++++++++++++++++++');
+        console.log(page);
+        console.log('offset ',(page - 1)*limit);
+        console.log(projects);
         if(projects.length == 0){
             throw new HttpException("Projects not found", HttpStatus.NOT_FOUND);
         }

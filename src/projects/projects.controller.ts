@@ -55,7 +55,10 @@ export class ProjectsController {
     @ApiResponse({status: 404, description: 'Projects not found'})
     @Get('pagination/folder/:id')
     async getProjectsByFolderIdPagination(@Param('id') folder_id: number, @Query('page') page: number, @Query('limit') limit: number){
-        return await this.projectsService.getProjectsByFolderIdPagination(folder_id, page, limit);
+        console.log('===============================');
+        const response = await this.projectsService.getProjectsByFolderIdPagination(folder_id, page, limit);
+        console.log(response);
+        return response;
     }
 
     @ApiOperation({summary: 'Update project'})
