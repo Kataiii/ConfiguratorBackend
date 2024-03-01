@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Uploaded
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { mapSortFactor, mapSortOrder } from 'src/utils/SortMaps';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { DeleteProjectsDto } from './dto/delete-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -44,20 +45,31 @@ export class ProjectsController {
     @ApiResponse({status: 200, type: Project})
     @ApiResponse({status: 404, description: 'Projects not found'})
     @Get('/pagination/:id')
-    async getProjectsByAccountAndRoleIdPagination(@Req() request, @Param('id') role_id: number, @Query('page') page: number, @Query('limit') limit: number){
+    async getProjectsByAccountAndRoleIdPagination(@Req() request, 
+        @Param('id') role_id: number, 
+        @Query('page') page: number, 
+        @Query('limit') limit: number, 
+        @Query('sortFactor') sortFactor: string,
+        @Query('sortOrder') sortOrder: string
+    ){
+        console.log(mapSortFactor.get(sortFactor));
+        console.log(mapSortOrder.get(sortOrder));
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         const accessToken = type === 'Bearer' ? token : undefined;
-        return await this.projectsService.getProgectByAccountAndRoleIdPagination(role_id, page, limit, accessToken);
+        return await this.projectsService.getProgectByAccountAndRoleIdPagination(role_id, page, limit, accessToken, mapSortFactor.get(sortFactor), mapSortOrder.get(sortOrder));
     }
 
     @ApiOperation({summary: 'Get projects by folder id, pagination'})
     @ApiResponse({status: 200, type: Project})
     @ApiResponse({status: 404, description: 'Projects not found'})
     @Get('pagination/folder/:id')
-    async getProjectsByFolderIdPagination(@Param('id') folder_id: number, @Query('page') page: number, @Query('limit') limit: number){
-        console.log('===============================');
-        const response = await this.projectsService.getProjectsByFolderIdPagination(folder_id, page, limit);
-        console.log(response);
+    async getProjectsByFolderIdPagination(@Param('id') folder_id: number, 
+        @Query('page') page: number, 
+        @Query('limit') limit: number, 
+        @Query('sortFactor') sortFactor: string,
+        @Query('sortOrder') sortOrder: string
+    ){
+        const response = await this.projectsService.getProjectsByFolderIdPagination(folder_id, page, limit, mapSortFactor.get(sortFactor), mapSortOrder.get(sortOrder));
         return response;
     }
 

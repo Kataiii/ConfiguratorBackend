@@ -11,6 +11,7 @@ import { AccountsProjects } from 'src/accounts-projects/accounts-ptojects.model'
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { LastFolderProjectsService } from 'src/last_folder-projects/last_folder-projects.service';
 import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
+import { mapSortFactor } from 'src/utils/SortMaps';
 
 @Injectable()
 export class ProjectsService {
@@ -55,37 +56,59 @@ export class ProjectsService {
         return await this.projectsRepository.findOne({where: {id: id}});
     }
 
-    async getProgectByAccountAndRoleIdPagination(role_id: number, page: number, limit: number, accessToken: string | undefined){
+    async getProgectByAccountAndRoleIdPagination(role_id: number, page: number, limit: number, accessToken: string | undefined, sortFactor: string, sortOrder: string){
         const accountData = await this.checkAccountData(accessToken);
-        const account_projects: AccountsProjects[] = await this.accountsProjectsService.getProjectsByAccountAndRoleIdPagination(accountData.id, role_id, page, limit);
+        const account_projects: AccountsProjects[] = await this.accountsProjectsService.getProjectsByAccountAndRoleIdPagination(accountData.id, role_id, page, limit, sortFactor,sortOrder);
 
         if(account_projects.length == 0){
             throw new HttpException("Projects not found", HttpStatus.NOT_FOUND);
         }
 
-        let projects = [];
+        let projects: Project[] = [];
         for(let i = 0; i < account_projects.length; i++){
             const project = await this.getProjectById(account_projects[i].project_id);
             projects.push(project);
         }
-        return projects;
+        if(sortFactor === mapSortFactor.get("По дате")) return projects;
+        projects = projects.sort((pr1, pr2) => {
+            if(typeof pr1[sortFactor] === 'object'){
+                if(pr1[sortFactor] > pr2[sortFactor])
+                {
+                    // console.log(new Date(pr1[sortFactor]));
+                    // console.log(new Date(pr2[sortFactor]));
+                    // console.log(new Date(pr1[sortFactor]) > new Date(pr2[sortFactor]));
+                    return 1;
+                }
+                if(pr1[sortFactor] < pr2[sortFactor]) 
+                {
+                    return -1;
+                }
+                return 0;
+            }
+            else{
+                return pr1[sortFactor].localeCompare(pr2[sortFactor]);
+            }
+        });
+        let projectToSend: Project[] = [];
+        for(let i: number = (page-1)*limit; i <(page-1)*limit + Number(limit); i++){
+            if(projects[i] != null) {
+                projectToSend.push(projects[i]);
+            }
+        }
+        return projectToSend;
     }
 
-    async getProjectsByFolderIdPagination(folder_id: number, page: number, limit: number){
+    async getProjectsByFolderIdPagination(folder_id: number, page: number, limit: number, sortFactor: string, sortOrder: string){
         const projects = await this.projectsRepository.findAll({
             where: {
                 folder_id: folder_id
             },
             order: [
-                ['updatedAt', 'DESC']
+                [sortFactor, sortOrder]
             ],
             limit: limit,
             offset: (page - 1)*limit
         });
-        console.log('++++++++++++++++++++++++++++++');
-        console.log(page);
-        console.log('offset ',(page - 1)*limit);
-        console.log(projects);
         if(projects.length == 0){
             throw new HttpException("Projects not found", HttpStatus.NOT_FOUND);
         }

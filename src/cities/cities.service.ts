@@ -8,7 +8,9 @@ export class CitiesService {
     constructor(@InjectModel(City) private cityRepository: typeof City){}
 
     async getAllCities(){
-        const cities = await this.cityRepository.findAll();
+        const cities = await this.cityRepository.findAll({
+            order:[["name", "ASC"]]
+        });
         return cities;
     }
 

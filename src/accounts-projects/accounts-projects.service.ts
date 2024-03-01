@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { mapSortFactor } from 'src/utils/SortMaps';
 import { AccountsProjects } from './accounts-ptojects.model';
 import { CreateAccountsProjectsDto } from './dto/create_accounts-projects.dto';
 
@@ -15,19 +16,26 @@ export class AccountsProjectsService {
         return await this.accountsProjectsRepository.findAll({where: {account_id: account_id}});
     }
 
-    //TODO проверить работоспособность
-    async getProjectsByAccountAndRoleIdPagination(account_id: number, role_id: number, page: number, limit: number){
+    async getProjectsByAccountAndRoleIdPagination(account_id: number, role_id: number, page: number, limit: number, sortFactor: string, sortOrder: string){
+        if(sortFactor === mapSortFactor.get("По дате")){
+            return await this.accountsProjectsRepository.findAll({
+                where: {
+                    account_id: account_id,
+                    role_id: role_id
+                },
+                order: [
+                    [sortFactor, sortOrder]
+                ],
+                limit: limit,
+                offset: (page - 1) * limit
+            })
+        }
         return await this.accountsProjectsRepository.findAll({
             where: {
                 account_id: account_id,
                 role_id: role_id
-            },
-            order: [
-                ['createdAt', 'DESC']
-            ],
-            limit: limit,
-            offset: (page - 1) * limit
-        })
+            }
+        });
     }
 
     async countAllProjectByAccountAndRole(account_id: number,role_id: number){
