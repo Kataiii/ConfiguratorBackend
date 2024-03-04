@@ -14,6 +14,18 @@ export class CitiesService {
         return cities;
     }
 
+    async getAllCitiesWithPagination(page: number, limit: number){
+        return await this.cityRepository.findAll({
+            limit: limit,
+            offset: (page - 1)*limit,
+            order: [["name", "ASC"]]
+        })
+    }
+
+    async countAllCities(){
+        return (await this.cityRepository.findAndCountAll()).count;
+    }
+
     async create(dto: CreateCityDto){
         const city = await this.cityRepository.create(dto);
         return city;
