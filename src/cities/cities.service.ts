@@ -26,6 +26,13 @@ export class CitiesService {
         return (await this.cityRepository.findAndCountAll()).count;
     }
 
+    async filtersCities(query: string){
+        const cities = await this.cityRepository.findAll({
+            order: [["name", "ASC"]]  
+        });
+        return cities.filter(city => city.name.toLowerCase().includes(query.toLowerCase()));
+    }
+
     async create(dto: CreateCityDto){
         const city = await this.cityRepository.create(dto);
         return city;

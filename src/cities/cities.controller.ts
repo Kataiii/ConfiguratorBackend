@@ -38,6 +38,13 @@ export class CitiesController {
         return await this.citiesService.countAllCities();
     }
 
+    @ApiOperation({summary: 'Filters cities for search'})
+    @ApiResponse({status: 200, type: [City]})
+    @Get('/search_city')
+    async filtersCities(@Query('query')query: string){
+        return await this.citiesService.filtersCities(query);
+    }
+
     @ApiOperation({summary: 'Get city by id'})
     @ApiResponse({status: 200, type: City})
     @Get('/:id')
