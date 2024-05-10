@@ -2,7 +2,6 @@ import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
 import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { Account } from './account.model';
 import { AccountsService } from './accounts.service';

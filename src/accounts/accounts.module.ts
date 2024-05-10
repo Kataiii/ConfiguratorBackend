@@ -17,7 +17,7 @@ import { forwardRef } from '@nestjs/common/utils';
   imports: [
     SequelizeModule.forFeature([Account, Role, AccountRoles]),
     RolesModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
     CompaniesModule,
     forwardRef(() => AuthModule) 
   ],

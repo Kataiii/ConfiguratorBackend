@@ -16,6 +16,10 @@ export class AccountsProjectsService {
         return await this.accountsProjectsRepository.findAll({where: {account_id: account_id}});
     }
 
+    async getByProjectId(projectId: number | string){
+        return await this.accountsProjectsRepository.findOne({where: {project_id: projectId}})
+    }
+
     async getProjectsByAccountAndRoleIdPagination(account_id: number, role_id: number, page: number, limit: number, sortFactor: string, sortOrder: string){
         if(sortFactor === mapSortFactor.get("По дате")){
             return await this.accountsProjectsRepository.findAll({

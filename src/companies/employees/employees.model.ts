@@ -38,8 +38,16 @@ export class Employee extends Model<Employee, EmployeeCreationAttrs>{
     @Column({type: DataType.STRING, unique: false, allowNull: true})
     phone_number: string;
 
+    @ApiProperty({example: false, description: 'Проверка телефона', required: false})
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
+    is_checked_phone: boolean; 
+
     @ApiProperty({example: 1, description: 'Id компании', required: false})
     @ForeignKey(() => Company)
     @Column({type: DataType.INTEGER, unique: false, allowNull: true})
     company_id: number;
+
+    @ApiProperty({example: 'image.png', description: 'Строка загрузки картинки', required: false})
+    @Column({type: DataType.STRING, allowNull: true})
+    profile_picture: string;
 }

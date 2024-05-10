@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { mapSortFactor, mapSortOrder } from 'src/utils/SortMaps';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { DeleteProjectsDto } from './dto/delete-project.dto';
+import { SaveFilesDto } from './dto/save-files.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './projects.model';
 import { ProjectsService } from './projects.service';
@@ -13,17 +14,6 @@ import { ProjectsService } from './projects.service';
 @Controller('projects')
 export class ProjectsController {
     constructor(private projectsService: ProjectsService){}
-
-    @ApiOperation({summary: 'Create project'})
-    @ApiResponse({ status: 201, type: Project})
-    @Post()
-    @UseInterceptors(FilesInterceptor('files'))
-    async create(@Body() dto: CreateProjectDto,
-        @UploadedFiles() files, @Req() request: Request){
-            const [type, token] = request.headers.authorization?.split(' ') ?? [];
-            const accessToken = type === 'Bearer' ? token : undefined;
-            return await this.projectsService.create(dto, files, accessToken);
-    }
 
     @ApiOperation({summary: 'Create project without files'})
     @ApiResponse({status: 201, type: Project})
@@ -87,6 +77,13 @@ export class ProjectsController {
         return await this.projectsService.delete(dto.id);
     }
 
+    @ApiOperation({summary: 'Get project by id'})
+    @ApiResponse({status: 200, type: Project})
+    @Get(':id')
+    async getById(@Param('id') id: number){
+        return await this.projectsService.getProjectById(id);
+    }
+
     @ApiOperation({summary: 'Count all projects by role id and account id'})
     @ApiResponse({status: 200, type: Number})
     @Get('count/:id')
@@ -110,5 +107,20 @@ export class ProjectsController {
         const [type, token] = request.headers.authorization.split(' ');
         const accessToken = type === 'Bearer' ? token : undefined;
         return await this.projectsService.addProjectInBasket(project, accessToken);
+    }
+
+    @ApiOperation({ summary: 'Create image test' })
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: "thum" },
+        { name: "json" }
+    ]))
+    @Post("/save_files")
+    async saveFiles(@UploadedFiles() files, @Body() dto: SaveFilesDto) {
+        return await this.projectsService.createFilesProjects(dto.idUser, dto.idProject, dto.typeRole, files.thum[0], files.json[0]);
+    }
+
+    @Get("/project_file/:id")
+    async getFileJson(@Param('id') projectId: number){
+        return await this.projectsService.getProjectFile(projectId);
     }
 }

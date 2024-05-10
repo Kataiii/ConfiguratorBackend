@@ -4,7 +4,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { FilesService } from 'src/files/files.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Project } from './projects.model';
-import * as jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken';
 import { AccountsProjectsService } from 'src/accounts-projects/accounts-projects.service';
 import { CreateProjectNameDto } from './dto/create-project-name.dto';
 import { AccountsProjects } from 'src/accounts-projects/accounts-ptojects.model';
@@ -12,24 +12,20 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { LastFolderProjectsService } from 'src/last_folder-projects/last_folder-projects.service';
 import { FolderProjectsService } from 'src/folder-projects/folder-projects.service';
 import { mapSortFactor } from 'src/utils/SortMaps';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class ProjectsService {
     constructor(@InjectModel(Project) private projectsRepository: typeof Project,
-        private filesService: FilesService,
         private authService: AuthService,
         private accountsProjectsService: AccountsProjectsService,
         private lastFolderProjectsService: LastFolderProjectsService,
-        private folderProjectService: FolderProjectsService){}
+        private folderProjectService: FolderProjectsService,
+        private filesService: FilesService){}
 
     private async checkAccountData(accessToken: string | undefined){
         return <jwt.JwtPayload>this.authService.validateAccessToken(accessToken);
-    }
-    
-    async create(dto: CreateProjectDto, files: any[], accessToken: string | undefined){
-        const previewFileName = await this.filesService.createImageFile(files[0]);
-        const saveFileName = await this.filesService.createProjectFile(files[1]);
-        return await this.createWithoutFiles(dto, previewFileName, saveFileName, accessToken);
     }
 
     async createWithoutFiles(dto: CreateProjectDto, previewFileName: string | undefined, saveFileName: string | undefined, accessToken: string | undefined){
@@ -42,6 +38,30 @@ export class ProjectsService {
 
     async createProjectBd(dto: CreateProjectNameDto){
         return await this.projectsRepository.create(dto);
+    }
+
+    async createFilesProjects(idUser: string | number, idProject: string | number, typeRole: string, thum: File, json: File){
+        const names: string[] = await this.filesService.createProjectFiles(idUser, idProject, typeRole, thum, json);
+        const project: Project = await this.projectsRepository.findOne({where: {id: idProject}});
+
+        if(project.preview !== null) this.filesService.deleteFile(project.preview, [typeRole, String(idUser), "projects", String(idProject)]);
+        if(project.save_file !== null) this.filesService.deleteFile(project.save_file, [typeRole, String(idUser), "projects", String(idProject)]);
+
+        return await this.projectsRepository.update({id: project.id, preview: names[0], save_file: names[1]}, {where: {id: project.id}});
+    }
+
+    async getProjectFile(idProject: string | number){
+        const project = await this.projectsRepository.findOne({where: {id: idProject}});
+        const accountProject = await this.accountsProjectsService.getByProjectId(idProject);
+        const file: JSON = JSON.parse(
+            fs.readFileSync(path.resolve(
+                __dirname, 
+                "..", 
+                "..", 
+                "static", 
+                `${accountProject.role_id === 4 ? "users" : "companies"}/${accountProject.account_id}/projects/${project.id}/${project.save_file}`), "utf8")
+        );
+        return JSON.stringify(file);
     }
 
     async getAll(){

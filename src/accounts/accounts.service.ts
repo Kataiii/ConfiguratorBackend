@@ -2,18 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
 import { InjectModel } from '@nestjs/sequelize';
-import { where } from 'sequelize';
-import { CompaniesService } from 'src/companies/companies.service';
-import { CreateCompanyDto } from 'src/companies/dto/create_company.dto';
 import { RolesService } from 'src/roles/roles.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
 import { Account } from './account.model';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { BanAccountDto } from './dto/ban-account.dto';
-import { CreateAccountCompanyDto } from './dto/create-account-company.dto';
-import { CreateAccountUserDto } from './dto/create-account-user.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { UpdateAccountNotifications } from './dto/update-account.dto';
 
 @Injectable()
 export class AccountsService {
@@ -59,9 +53,7 @@ export class AccountsService {
             email: account.email,
             is_checked_email: account.is_checked_email,
             password: account.password,
-            city_id: account.city_id,
-            is_spam: account.is_spam,
-            profile_picture: account.profile_picture
+            is_spam: account.is_spam
         }, {where: {id: account.id}});
         return accountUpdated;
     }
@@ -96,5 +88,9 @@ export class AccountsService {
         const account = await this.getAccountById(dto.account_id);
         //TODO сделать таблицу забаненных пользователей
         return account;
+    }
+
+    async updateNotifications(dto: UpdateAccountNotifications){
+        return await this.accountRepository.update(dto, {where: {id: dto.id}});
     }
 }

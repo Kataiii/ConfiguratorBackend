@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { City } from "src/cities/cities.model";
 import { CompanyType } from "./company_types/company_types.model";
 
 interface CompanyCreationAttrs{
@@ -41,6 +42,10 @@ export class Company extends Model<Company, CompanyCreationAttrs>{
     @Column({type: DataType.STRING, unique: false, allowNull: false})
     phone_number: string;
 
+    @ApiProperty({example: false, description: 'Проверка телефона', required: false})
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
+    is_checked_phone: boolean; 
+
     @ForeignKey(() => CompanyType)
     @ApiProperty({example: 1, description: 'Id типа компании', required: true})
     @Column({type: DataType.INTEGER, unique: false, allowNull: false})
@@ -62,7 +67,16 @@ export class Company extends Model<Company, CompanyCreationAttrs>{
     @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
     is_checked_official_letter: boolean;
 
+    @ApiProperty({example: 1, description: 'Идентификатор города', required: false})
+    @ForeignKey(() => City)
+    @Column({type: DataType.INTEGER})
+    city_id: number;
+
+    @ApiProperty({example: 'image.png', description: 'Строка загрузки картинки', required: false})
+    @Column({type: DataType.STRING, allowNull: true})
+    profile_picture: string;
+
     @ApiProperty({example: 'Что-то написано', description: 'Информация о компании', required: false})
     @Column({type: DataType.TEXT, unique: false, allowNull: true})
-    about_company: string;
+    about: string;
 }

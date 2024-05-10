@@ -3,8 +3,6 @@ import { Model, Table, Column, DataType, ForeignKey, BelongsToMany } from "seque
 import { City } from "src/cities/cities.model";
 import { Role } from "src/roles/roles.model";
 import { AccountRoles } from "src/account-roles/account-roles.model";
-import { Project } from "src/projects/projects.model";
-import { AccountsProjects } from "src/accounts-projects/accounts-ptojects.model";
 
 interface AccountCreationAttrs{
     email: string;
@@ -28,22 +26,17 @@ export class Account extends Model<Account, AccountCreationAttrs>{
 
     @ApiProperty({example: 'Qwerty123*', description: 'Пароль', required: true})
     @Column({type: DataType.STRING, allowNull: false})
-    password: string; //массив байтов
+    password: string;
 
-    @ApiProperty({example: 1, description: 'Идентификатор города', required: false})
-    @ForeignKey(() => City)
-    @Column({type: DataType.INTEGER})
-    city_id: number;
-
-    @ApiProperty({example: false, description: 'Получение на почту уведомлений', required: true})
+    @ApiProperty({example: false, description: 'Получение на почту новостной рассылки', required: true})
     @Column({type: DataType.BOOLEAN, allowNull: false})
     is_spam: boolean;
 
+    @ApiProperty({example: false, description: 'Получение на почту уведомлений', required: true})
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: true})
+    on_notifications: boolean;
+
     @BelongsToMany(() => Role, () => AccountRoles)
     roles: Role[];
-
-    @ApiProperty({example: 'image.png', description: 'Строка загрузки картинки', required: false})
-    @Column({type: DataType.STRING, allowNull: true})
-    profile_picture: string;
 }
 

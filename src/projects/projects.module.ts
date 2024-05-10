@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AccountsProjectsModule } from 'src/accounts-projects/accounts-projects.module';
 import { AuthModule } from 'src/auth/auth.module';
@@ -14,11 +14,11 @@ import { ProjectsService } from './projects.service';
   providers: [ProjectsService],
   imports:[
     SequelizeModule.forFeature([Project]),
-    FilesModule,
     AccountsProjectsModule,
-    AuthModule,
+    forwardRef(() => AuthModule),
     LastFolderProjectsModule,
-    FolderProjectsModule
+    FolderProjectsModule,
+    FilesModule
   ],
   exports:[
     ProjectsService

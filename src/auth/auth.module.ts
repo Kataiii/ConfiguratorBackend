@@ -17,7 +17,7 @@ import { TokensModule } from './tokens/tokens.module';
   providers: [AuthService],
   imports:[
     forwardRef(() => AccountsModule),
-    UsersModule,
+    forwardRef(() => UsersModule),
     CompaniesModule,
     ActivationLinksModule,
     TokensModule,
