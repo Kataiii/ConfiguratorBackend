@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Project } from "src/projects/projects.model";
 
-export class CreateProjectEvaluationsDto{
-    @ApiProperty({example: 1, description: 'Уникальный идентификатор', required: true})
-    project_id: number;
+export class PrejectEvalutionsResponse{
+    @ApiProperty({example: 1, description: 'проект', required: true})
+    project: Project
 
     @ApiProperty({example: 'Какое-то описание', description: 'Описание проекта', required: true})
     description?: string;

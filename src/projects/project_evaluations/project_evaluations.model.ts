@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { City } from "src/cities/cities.model";
 import { User } from "src/users/users.model";
 import { Project } from "../projects.model";
@@ -22,6 +22,9 @@ export class ProjectEvaluations extends Model<ProjectEvaluations, ProjectEvaluat
     @Column({type: DataType.INTEGER, unique: false, allowNull: false})
     @ForeignKey(() => Project)
     project_id: number;
+
+    @BelongsTo(() => Project)
+    project!: Project;
 
     @ApiProperty({example: 'Описание какого-то проекта', description: 'Описание, пожелания о проекте', required: false})
     @Column({type: DataType.TEXT, unique: false, allowNull: true})

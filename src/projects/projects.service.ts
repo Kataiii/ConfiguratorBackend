@@ -136,7 +136,8 @@ export class ProjectsService {
     }
 
     async update(dto: UpdateProjectDto){
-        return await this.projectsRepository.update(dto, {where: {id: dto.id}});
+        const response = await this.projectsRepository.update(dto, {where: {id: dto.id}});
+        return await this.projectsRepository.findOne({where: {id: dto.id}});
     }
 
     async delete(id: number){
