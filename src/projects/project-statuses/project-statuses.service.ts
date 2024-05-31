@@ -14,4 +14,12 @@ export class ProjectStatusesService {
     async getAllStatuses(){
         return await this.projectStatusesRepository.findAll();
     }
+
+    async getStatusById(id: number){
+        return await this.projectStatusesRepository.findOne({where: {id: id}});
+    }
+
+    async getStatusByName(name: string){
+        return await this.projectStatusesRepository.findOne({where: {name: name}});
+    }
 }
