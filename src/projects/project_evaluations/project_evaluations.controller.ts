@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { CreateProjectEvaluationsDto } from './dto/create-project_evaluations.dto';
@@ -25,5 +25,12 @@ export class ProjectEvaluationsController {
     @Get()
     async getAll(){
         return await this.projectEvaluationsService.getAll();
+    }
+
+    @ApiOperation({summary: "Get item by project id"})
+    @ApiResponse({status: 200, type: ProjectEvaluations})
+    @Get("/project/:id")
+    async getByProjectId(@Param("id") id: number){
+        return await this.projectEvaluationsService.getByProjectId(id);
     }
 }

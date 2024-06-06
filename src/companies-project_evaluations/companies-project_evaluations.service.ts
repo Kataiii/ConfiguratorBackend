@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CompaniesProjectEvaluations } from './companies-project_evaluations.model';
 import { CreateCompaniesProjectEvalDto } from './dto/create-companies-project-eval.dto';
@@ -14,12 +14,36 @@ export class CompaniesProjectEvaluationsService {
     }
 
     async getAllByCompanyId(company_id: number){
-        return await this.companiesProjectEvalRepository.findAll({where: {company_id: company_id}})
+        const items = await this.companiesProjectEvalRepository.findAll({where: {company_id: company_id}});
+        if(items.length === 0){
+            throw new HttpException("Not found", HttpStatus.NOT_FOUND);
+        }
+        return items;
+    }
+
+    async getAllByProjectId(project_evaluation_id: number){
+        const items = await this.companiesProjectEvalRepository.findAll({where: {project_evaluation_id: project_evaluation_id}});
+        if(items.length === 0){
+            throw new HttpException("Not found", HttpStatus.NOT_FOUND);
+        }
+        return items;
     }
 
     async getByCompanyIdProjectId(company_id: number, project_evaluation_id: number){
-        return await this.companiesProjectEvalRepository.findOne(
+        const item = await this.companiesProjectEvalRepository.findOne(
             {where: {company_id: company_id, project_evaluation_id: project_evaluation_id}});
+        if(item === null){
+            throw new HttpException("Not found", HttpStatus.NOT_FOUND);
+        }
+        return item;
+    }
+
+    async getCountByProjectId(project_evaluation_id: number){
+        return (await this.companiesProjectEvalRepository.findAndCountAll({where: {project_evaluation_id: project_evaluation_id}})).count;
+    }
+
+    async getCountByProjectIdAndStatusId(project_evaluation_id: number, status_id: number){
+        return  (await this.companiesProjectEvalRepository.findAndCountAll({where: {project_evaluation_id: project_evaluation_id, status_id: status_id}})).count;
     }
 
     async update(dto: UpdateCompaniesProjectEvalDto){

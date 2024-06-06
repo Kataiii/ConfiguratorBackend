@@ -61,4 +61,8 @@ export class ProjectEvaluationsService {
     async getAll(): Promise<PrejectEvalutionsResponse[]> {
         return await this.projectEvalutionsRepository.findAll({ include: Project });
     }
+
+    async getByProjectId(project_id: number){
+        return await this.projectEvalutionsRepository.findOne({where: {project_id: project_id}});
+    }
 }

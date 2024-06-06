@@ -41,11 +41,16 @@ import { RecoveryLinksModule } from "./auth/recovery_links/recovery_links.module
 import * as path from "path";
 import { LastFolderProjectsModule } from './last_folder-projects/last_folder-projects.module';
 import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.model";
+import { ChatsModule } from './chats/chats.module';
+import { MessagesController } from './messages/messages.controller';
+import { MessagesModule } from './messages/messages.module';
+import { Chat } from "./chats/chats.model";
+import { Message } from "./messages/messages.model";
 
 
 
 @Module({
-    controllers: [],
+    controllers: [MessagesController],
     providers: [],
     imports: [
         ConfigModule.forRoot({
@@ -78,7 +83,9 @@ import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.
                     ProjectStatuses,
                     ProjectEvaluations,
                     CompaniesProjectEvaluations,
-                    LastFolderProjects
+                    LastFolderProjects,
+                    Chat,
+                    Message
                 ],
             autoLoadModels: true
           }),
@@ -102,7 +109,9 @@ import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.
         ProjectEvaluationsModule,
         CompaniesProjectEvaluationsModule,
         RecoveryLinksModule,
-        LastFolderProjectsModule
+        LastFolderProjectsModule,
+        ChatsModule,
+        MessagesModule
     ]
 })
 export class AppModule{
