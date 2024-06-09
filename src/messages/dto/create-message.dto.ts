@@ -16,3 +16,23 @@ export class CreateMessageDto{
     @ApiProperty({example: true, description: "is read message", required: true})
     isRead: boolean;
 }
+
+export class CreateMessageInfoDto{
+    @ApiProperty({example: 1, description: 'Id chat', required: true})
+    chatId?: number;
+
+    @ApiProperty({example: 1, description: 'Id user', required: true})
+    userId?: number;
+
+    @ApiProperty({example: 1, description: 'Id sender', required: true})
+    senderId: number;
+
+    @ApiProperty({example: 1, description: 'Id role sender', required: true})
+    roleSenderId: number;
+
+    @ApiProperty({example: "hello", description: "content in message", required: true})
+    content: string;
+
+    @ApiProperty({example: true, description: "is read message", required: true})
+    isRead: boolean;
+}

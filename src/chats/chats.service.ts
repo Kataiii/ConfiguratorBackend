@@ -15,4 +15,14 @@ export class ChatsService {
         if(typeRole === "company") return await this.chatsRepository.findAll({where:{companyId: accountId}});
         return await this.chatsRepository.findAll({where:{userId: accountId}});
     }
+
+    async getChatById(id: number){
+        return await this.chatsRepository.findOne({where: {id: id}});
+    }
+
+    async checkChat(chatId: number, accountId: number){
+        const checkUser = await this.chatsRepository.findAll({where: {id: chatId, userId: accountId}});
+        const checkCompany = await this.chatsRepository.findAll({where: {id: chatId, companyId: accountId}});
+        return checkUser.length>0||checkCompany.length>0;
+    }
 }

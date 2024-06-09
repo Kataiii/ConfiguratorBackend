@@ -42,20 +42,21 @@ import * as path from "path";
 import { LastFolderProjectsModule } from './last_folder-projects/last_folder-projects.module';
 import { LastFolderProjects } from "./last_folder-projects/last_folder-projects.model";
 import { ChatsModule } from './chats/chats.module';
-import { MessagesController } from './messages/messages.controller';
 import { MessagesModule } from './messages/messages.module';
 import { Chat } from "./chats/chats.model";
 import { Message } from "./messages/messages.model";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 
 
 
 @Module({
-    controllers: [MessagesController],
+    controllers: [],
     providers: [],
     imports: [
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`
         }),
+        EventEmitterModule.forRoot(),
         ServeStaticModule.forRoot({
             rootPath: path.resolve(__dirname, '..', 'static'),
             exclude: ['/(.*)']

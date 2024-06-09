@@ -42,8 +42,9 @@ export class ProjectsService {
 
     async createFilesProjects(idUser: string | number, idProject: string | number, typeRole: string, thum: File, json: File){
         const names: string[] = await this.filesService.createProjectFiles(idUser, idProject, typeRole, thum, json);
+        console.log(idProject);
         const project: Project = await this.projectsRepository.findOne({where: {id: idProject}});
-
+        console.log(project);
         if(project.preview !== null) this.filesService.deleteFile(project.preview, [typeRole, String(idUser), "projects", String(idProject)]);
         if(project.save_file !== null) this.filesService.deleteFile(project.save_file, [typeRole, String(idUser), "projects", String(idProject)]);
 
@@ -53,13 +54,14 @@ export class ProjectsService {
     async getProjectFile(idProject: string | number){
         const project = await this.projectsRepository.findOne({where: {id: idProject}});
         const accountProject = await this.accountsProjectsService.getByProjectId(idProject);
+        console.log(accountProject);
         const file: JSON = JSON.parse(
             fs.readFileSync(path.resolve(
                 __dirname, 
                 "..", 
                 "..", 
                 "static", 
-                `${accountProject.role_id === 4 ? "users" : "companies"}/${accountProject.account_id}/projects/${project.id}/${project.save_file}`), "utf8")
+                `users/1/projects/${project.id}/${project.save_file}`), "utf8")
         );
         return JSON.stringify(file);
     }
