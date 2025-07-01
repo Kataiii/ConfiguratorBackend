@@ -6,7 +6,9 @@ import { ChatsService } from 'src/chats/chats.service';
 import { CreateMessageDto, CreateMessageInfoDto } from './dto/create-message.dto';
 import { Message } from './messages.model';
 import { MessagesService } from './messages.service';
-
+import Request from "express";
+import { TokenMiddleware } from './token.midlleware';
+// import { Request } from 'express';
 
 @WebSocketGateway(5001, { cors: '*' })
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -17,14 +19,25 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
 	afterInit(server: Server) {
 		console.log('Initialized');
+		server.use((socket, next) => {
+			const token = socket.handshake.auth.token;
+			console.log(token);
+			console.log("tyt");
+		});
+		//@ts-ignore
+		// server.use(new TokenMiddleware());
 	}
 
 	handleDisconnect(client: Socket) {
 		console.log(`Client Disconnected: ${client.id}`);
 	}
 
-	handleConnection(client: Socket, ...args: any[]) {
+	handleConnection(client: Socket, res: Request, ...args: any[]) {
 		console.log(`Client Connected: ${client.id}`);
+		// console.log(client.client);
+		// console.log(client);
+		// const token = res.headers['authorization']?.split(' ')[1];
+		// console.log(token);
 	}
 
 	@SubscribeMessage("message")
